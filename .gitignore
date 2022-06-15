@@ -1,0 +1,7 @@
+#ignorar virtual environment, icarusvenv es mi venv en mi pc (rene)
+#agregen la carpeta de sus venv aquí si usan un virtual environment
+/icarusvenv
+#ignorar los archivos de workspace de cada pc de los integrantes del equipo
+*.code-workspace
+#ignorar nodemodules
+/node_modules
