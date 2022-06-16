@@ -1,9 +1,21 @@
 <script>
   import logo from './assets/svelte.png'
   import Counter from './lib/Counter.svelte'
+  import { Styles, Icon } from 'sveltestrap';
 </script>
 
 <main>
+  <Styles />
+  <h1>
+    Hello <Icon name="globe2" />!
+  </h1>
+  <br>
+  <div class="btn-group" role="group" aria-label="Basic example">
+    <button type="button" class="btn btn-primary">Left</button>
+    <button type="button" class="btn btn-primary">Middle</button>
+    <button type="button" class="btn btn-primary">Right</button>
+  </div>
+  <br>
   <img src={logo} alt="Svelte Logo" />
   <h1>Hello world!</h1>
 
