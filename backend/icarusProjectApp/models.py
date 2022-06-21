@@ -71,10 +71,12 @@ class Vuelo(models.Model):
     fecha_llegada = models.DateField()
     id_ciudad_origen = models.ForeignKey(
         Ciudad,
+        related_name = 'ciudad_origen',
         on_delete=models.CASCADE
     )
     id_ciudad_destino = models.ForeignKey(
         Ciudad,
+        related_name= 'ciudad_destino',
         on_delete=models.CASCADE
     )
     id_avion_asociado = models.ForeignKey(
