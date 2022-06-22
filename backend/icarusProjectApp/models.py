@@ -43,7 +43,7 @@ class Reserva(models.Model):
     Campos:
         id {autoincrement} -- numero de la reserva, que se va autoincrementando
         solo_ida {boolean} -- booleano que indica si la reserva es solamente de ida, 0 solo ida, 1 ida y vuelta
-        fecha_reserva {date} -- fecha que indica cuando se hizo la reserva
+        fecha_reserva {datetime} -- fecha y hora que indica cuando se hizo la reserva
         valor_reserva {integer} -- numero que indica el valor de la reserva
         rut_usuario {foreign} -- relacion con el rut del modelo Usuario
 
@@ -51,7 +51,7 @@ class Reserva(models.Model):
 
     id = models.AutoField(primary_key = True, unique = True)
     solo_ida = models.BooleanField()
-    fecha_reserva = models.DateField()
+    fecha_reserva = models.DateTimeField()
     valor_reserva = models.IntegerField()
     rut_usuario = models.ForeignKey(
         Usuario, 
@@ -139,8 +139,8 @@ class Vuelo(models.Model):
 
     Campos:
         id {autoincrement} -- numero que identifica al vuelo, que se autoincrementa a medida que se ingresan más vuelos
-        fecha_salida {date} -- fecha de salida del vuelo
-        fecha_llegada {date} -- fecha de llegada del vuelo
+        fecha_salida {datetime} -- fecha y hora de salida del vuelo
+        fecha_llegada {datetime} -- fecha y hora de llegada del vuelo
         id_ciudad_origen {foreign} -- relacion con la ciudad del modelo Ciudad
         id_ciudad_destino {foreign} -- relacion con la ciudad del modelo Ciudad
         id_avion_asociado {foreign} -- relacion con el id del avion del modelo Avion
@@ -148,8 +148,8 @@ class Vuelo(models.Model):
     """
 
     id = models.AutoField(primary_key = True, unique = True)
-    fecha_salida = models.DateField()
-    fecha_llegada = models.DateField()
+    fecha_salida = models.DateTimeField()
+    fecha_llegada = models.DateTimeField()
     id_ciudad_origen = models.ForeignKey(
         Ciudad,
         related_name = 'ciudad_origen',
