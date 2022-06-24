@@ -6,7 +6,7 @@ from wsgiref import validate
 from django.contrib.auth import password_validation, authenticate
 
 import email
-from platformdirs import user_cache_dir
+#from platformdirs import user_cache_dir
 #Django REST Framework
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
@@ -24,10 +24,16 @@ class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model =Usuario
         fields = '__all__'
+    def create(self,validated_data):
+        usuario = Usuario(**validated_data)
+        usuario.set_password(validated_data['password'])
+        usuario.save()
+        return usuario
 
 
 class TestUsuarioSerializer(serializers.Serializer):
-    username = serializers.CharField()
+    rut = serializers.CharField()
+    nombre = serializers.CharField()
     email =serializers.EmailField()
 
     
@@ -43,7 +49,7 @@ class TestUsuarioSerializer(serializers.Serializer):
         if value =='':
             raise serializers.ValidationError('tiene que indicar un correo')
 
-        if  self.validate_username(self.context['username']) in value:
+        if  self.validate_username(self.context['nombre']) in value:
             raise serializers.ValidationError('El email no puede contener el nombre')
 
         return value
@@ -51,10 +57,11 @@ class TestUsuarioSerializer(serializers.Serializer):
     def validate(self,data):
         return data
 
-    #def create(self, validated_data):
-       # print(validated_data)
-       # return Usuario.objects.create(**validated_data)
 
+    """ def create(self, validated_data):
+        print(validated_data)
+        return Usuario.objects.create(**validated_data)
+ """
 
 
 

@@ -29,9 +29,9 @@ def usuario_api_view(request):
         usuarios_serializer = UsuarioSerializer(usuarios, many =True)
 
         test_data = {
-            'username':'develop',
-            'email':'test@gmail.com',
-            #'rut':'3'
+            'rut':'59978950',
+            'nombre':'chorizo',
+            'email':'test2@gmail.com',
         }
 
         test_usuario = TestUsuarioSerializer(data = test_data, context =test_data)

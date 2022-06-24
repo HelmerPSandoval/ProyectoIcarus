@@ -6,18 +6,18 @@ from django.db import models
 
 
 class UsuarioManager(BaseUserManager):
-    def create_user(self,email,username,password = None):
+    def create_user(self,email,nombre,password = None):
         if not email:
             raise ValueError('Debe tener email')
 
-        usuario =self.model(username=username,email=self.normalize_email(email))
+        usuario =self.model(nombre=nombre,email=self.normalize_email(email))
 
         usuario.set_password(password)
         usuario.save()
         return usuario
 
-    def create_superuser(self,username,email,password):
-        usuario =self.create_user(email=self.normalize_email(email),username=username, password=password)
+    def create_superuser(self,nombre,email,password):
+        usuario =self.create_user(email=self.normalize_email(email),nombre=nombre, password=password)
 
         usuario.usuario_administrador =True
         usuario.save()
@@ -40,7 +40,7 @@ class Usuario(AbstractBaseUser):
         fecha_nacimiento {date} -- fecha que indica la fecha de nacimiento del usuario
 
     """
-    username =models.CharField('Nombre usuario',max_length = 255, unique= True, null=True)
+    nombre =models.CharField(max_length = 255, unique= True, null=True)
     apellido = models.CharField(max_length = 255, null= True)
     email = models.EmailField(max_length = 255)
     #password = models.CharField(max_length = 255)
@@ -54,7 +54,7 @@ class Usuario(AbstractBaseUser):
     objects= UsuarioManager()
 
 
-    USERNAME_FIELD = 'username'
+    USERNAME_FIELD = 'nombre'
     REQUIRED_FIELDS= ['email']
     
     class Meta:
@@ -62,7 +62,7 @@ class Usuario(AbstractBaseUser):
 
 
     def __str__(self):
-        return f'{self.username}'
+        return f'{self.nombre}'
 
 
         
