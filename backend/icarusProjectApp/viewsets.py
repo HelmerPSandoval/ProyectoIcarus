@@ -9,6 +9,9 @@ from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from icarusProjectApp.serializer import UsuarioTokenSerializer
 
 
 # MODELS
@@ -86,39 +89,32 @@ def usuario_detail_api_view(request,pk=None):
     return Response({'message':'no se ha encontrado un usuario con estos datos'}, status = status.HTTP_400_BAD_REQUEST)
 
 
+class Login(ObtainAuthToken):
 
+    def post(self,request,*args,**kwargs):
+        login_serializer = self.serializer_class(data = request.data, context = {'request' :request})
+        if login_serializer.is_valid():
+            user = login_serializer.validated_data['user']
+            if user.usuario_activo:
+                token,created = Token.objects.get_or_create(user = user)
+                user_serializer=UsuarioTokenSerializer(user)
+                if created:
+                    return Response({'token' : token.key, 'user' : user_serializer.data, 'mensaje' : 'Inicio de sesión exitoso'}, status = status.HTTP_201_CREATED)
+                else:
+                    token.delete()
+                    token = Token.objects.create(user = user)
+                    return Response({'token' : token.key, 'user' : user_serializer.data, 'mensaje' : 'Inicio de sesión exitoso'}, status = status.HTTP_201_CREATED)
+            else:
+                return Response({'error':'Este usuario no pude iniciar sesión'}, status = status.HTTP_401_UNAUTHORIZED)
+        else:
+             return Response({'error':'Nombre de usuario o contraseña incorrectos.'}, status = status.HTTP_400_BAD_REQUEST)
+        return Response({'mensaje':'Hola desde response'}, status = status.HTTP_200_OK)
 
+class Logout(APIView):
 
-
-
-
-""" 
-class UsuarioViewSet(viewsets.ModelViewSet):
-    queryset = Usuario.objects.all()
-    serializer_class = UsuarioSerializer
-
-
-class UsuarioViewSetLog(viewsets.GenericViewSet):
-
-    queryset = Usuario.objects.filter()
-    serializer_class = UsuarioSerializer
-
-    #detail define si es una peticion de detalle o no, en methods añadimos el metodo permitido, en nuestro caso solo vamo a permitir el post
-    @action(detail=False, methods=['post'])
-    def login(self, request):
-        
-
-        serializer = UsuarioLoginSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        usuario, token = serializer.save()
-
-        data ={
-            'usuario': UsuarioSerializer(usuario).data,
-            'access_token': token
-
-        }
-        return Response(data, status=status.HTTP_201_CREATED)
-
-
- """
+    def get(self,request,*args,**kwargs):
+        token = request.GET.get('token')
+        token = Token.objects.filter(key = token).first()
+        if token:
+            user = token.user 
 
