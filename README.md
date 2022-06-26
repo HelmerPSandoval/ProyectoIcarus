@@ -14,7 +14,7 @@ se debe ejecutar `pip install -r requirements.txt` y se instalará todo lo neces
 ## Estándares
 Los commits que se hagan al repositorio tienen que tener el formato de [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#specification)  
 
-#### Resumen
+#### Resumen conventional commits
 El formato a utilizar será orientado a commits de una sola linea, por lo que no se usará cuerpo ni pie de página, entonces el formato de un commit en este repositorio es el siguiente:
 
 > tipo(ámbito): descripción 
@@ -41,4 +41,16 @@ La descricpción es un breve resumen del commit.
 
 Luego de los dos puntos (:) debe haber un espacio y luego viene la descripción.
 
+## Versionado de software
 
+los estándares de versionados a utilizar serán los de:  [Semantic Versioning](https://semver.org/lang/es/) 
+
+#### Resumen Semantic Versioning
+
+La versión de cada release debe mantener el siguiente formato:
+  
+> [vMAJOR.MINOR.PATCH] , ejemplo: v2.1.9, donde:
+
+- MAJOR: Es el número correspondiente a cambios importantes en el código que podrían no ser compatibles con versiones anteriores.
+- MINOR: Cambios menos, cada nueva feature completa puede incrementar este número.
+- PATCH: Versión del parche (arreglos de bug, malfuncionamiento).
