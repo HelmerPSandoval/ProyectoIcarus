@@ -8,3 +8,5 @@
 /node_modules
 #ignorar cache
 /backend/icarusProject/__pycache__
+/backend/icarusProjectApp/migrations/__pycache__
+/backend/icarusProjectApp/__pycache__
