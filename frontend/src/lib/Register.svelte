@@ -85,7 +85,7 @@
 
         <div>
             <FormGroup floating label="Contraseña">
-                <Input class="h3 mb-3 fw-normal" bind:value={password}/>
+                <Input class="h3 mb-3 fw-normal" type="password" bind:value={password}/>
             </FormGroup>
         </div>
 
@@ -107,9 +107,13 @@
             </FormGroup>
         </div> 
 
-        <div class="form-floating">
+        <div>
             <FormGroup floating label="Sexo">
-                <Input class="h3 mb-3 fw-normal" bind:value={sexo} />
+            <select class="form-select mb-3" aria-label="Default select example" bind:value={sexo}>
+                <option value="hombre">hombre</option>
+                <option value="mujer">mujer</option>
+                <option value="otro">otro</option>
+              </select>
             </FormGroup>
         </div>
 
