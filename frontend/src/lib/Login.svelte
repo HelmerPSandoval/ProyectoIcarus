@@ -1,63 +1,71 @@
 <script>
     import { Col, Container, Row, Styles, Icon, Input, Button, Form, FormGroup, Image, Card  } from 'sveltestrap';
+    import { Router, Link, Route } from "svelte-routing";
+    import Home from './Home.svelte';
+    import { navigate } from "svelte-routing";
+    import {usuario} from "../utils/store";
 
-	let username = 'lelouch@developer.op'
-	let password = 'aweonao123'
+	let username = 'meme@maderasrafa.cl'
+	let password = 'memito123'
 	let result = null
-	
-	async function doPost () {
-		const res = await fetch('http://127.0.0.1:8000', {
-			method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-			body: JSON.stringify({
-				username,
-				password
-			})
-		})
-		
-		const datos = await res.json()
-		result = JSON.stringify(datos)
+
+    let error_ = false;
+
+    async function login () {
+        try {
+            const res = await fetch('http://127.0.0.1:8000', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username,
+                    password
+                })
+            })
+            const datos = await res.json()
+            result = JSON.stringify(datos);
+            if(datos.user.rol != null)
+            {
+                $usuario = datos.user;
+                navigate("/home", {replace:true});
+            }else{
+                error_ = true;
+            }
+        } catch (error) {
+            
+        }
 	}
+
+
+    
 </script>
 
 <Image alt="Icarus Airline" src="images/IcarusAirline.png" />
 <main class="form-signin"> 
-
+    
     <Form>
         <div class="form-floating">
             <FormGroup floating label="Email">
-              <Input class="h3 mb-3 fw-normal" bind:value={username} />
+                <Input class="h3 mb-3 fw-normal" bind:value={username} />
             </FormGroup>
         </div>
         
         <div>
             <FormGroup floating label="Contraseña">
-              <Input class="h3 mb-3 fw-normal" bind:value={password}/>
+                <Input class="h3 mb-3 fw-normal" bind:value={password}/>
             </FormGroup>
         </div>
         
         <div>
-            <button type="button" class="h3 mt-3 fw-normal btn boton_login" on:click={doPost}>Iniciar sesión</button>
+            <button type="button" class="h3 mt-3 fw-normal btn boton_login" on:click={login}>Iniciar sesión</button>
         </div>
         
     </Form>
-    
+
+
 </main>
-<p>
-    Respuesta:
-</p>
-<pre>
-{result}
-</pre>
-
-
-
-
-
-
 <style>
     
 

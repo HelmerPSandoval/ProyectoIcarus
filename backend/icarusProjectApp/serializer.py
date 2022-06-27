@@ -22,7 +22,7 @@ from .models import Usuario, Reserva, Pago, Ciudad, Avion, Vuelo, Reserva_Vuelo
 class UsuarioTokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ('email','nombre')
+        fields = ('rut','email','nombre','rol')
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:

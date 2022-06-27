@@ -1,14 +1,22 @@
 <script>
   import { Styles, Icon } from 'sveltestrap';
   import Login from './lib/Login.svelte';
+  import Home from './lib/Home.svelte'
+  import { Router, Link, Route } from "svelte-routing";
 </script>
 
 <main>
-  
-  
-  <Login />
+	<Router>
 
+    <Route path="/">
+      <Login></Login>
+    </Route>
 
+		<Route path="/home">
+			<Home></Home>
+		</Route>
+    
+	</Router>
 </main>
 
 <style>
