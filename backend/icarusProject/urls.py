@@ -14,8 +14,21 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+
+from icarusProjectApp.views import (
+
+    VueloAPIView,
+    CiudadAPIView,
+    AvionAPIView,
+    VueloListAPIView,
+
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('vuelos/', VueloAPIView.as_view(), name = "vuelos"),
+    path('ciudades/', CiudadAPIView.as_view(), name = "ciudades"),
+    path('aviones/', AvionAPIView.as_view(), name = "aviones"),
+    path('vuelo/<int:pk>', VueloListAPIView.as_view(), name ="vuelo"),
 ]

@@ -148,16 +148,18 @@ class Vuelo(models.Model):
     """
 
     id = models.AutoField(primary_key = True, unique = True)
-    fecha_salida = models.DateTimeField()
-    fecha_llegada = models.DateTimeField()
+    fecha_salida = models.DateField()
+    hora_salida = models.TimeField()
+    fecha_llegada = models.DateField()
+    hora_llegada = models.TimeField()
     id_ciudad_origen = models.ForeignKey(
         Ciudad,
-        related_name = 'ciudad_origen',
+        related_name = 'id_ciudad_origen',
         on_delete=models.CASCADE
     )
     id_ciudad_destino = models.ForeignKey(
         Ciudad,
-        related_name= 'ciudad_destino',
+        related_name= 'id_ciudad_destino',
         on_delete=models.CASCADE
     )
     id_avion_asociado = models.ForeignKey(
