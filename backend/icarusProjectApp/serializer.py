@@ -33,6 +33,12 @@ class UsuarioSerializer(serializers.ModelSerializer):
         usuario.set_password(validated_data['password'])
         usuario.save()
         return usuario
+    def update(self, instance, validated_data):
+        updated_usuario = super().update(instance, validated_data)
+        updated_usuario.set_password(validated_data['password'])
+        updated_usuario.save()
+        return updated_usuario
+
 
 
 class TestUsuarioSerializer(serializers.Serializer):
