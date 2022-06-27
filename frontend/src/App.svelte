@@ -3,6 +3,8 @@
   import Login from './lib/Login.svelte';
   import Home from './lib/Home.svelte'
   import { Router, Link, Route } from "svelte-routing";
+import Register from './lib/Register.svelte';
+import ResetPassword from './lib/Reset_password.svelte';
 </script>
 
 <main>
@@ -16,6 +18,14 @@
 			<Home></Home>
 		</Route>
     
+		<Route path="/register">
+			<Register></Register>
+		</Route>
+    
+		<Route path="/reset_password">
+			<ResetPassword></ResetPassword>
+		</Route>
+
 	</Router>
 </main>
 

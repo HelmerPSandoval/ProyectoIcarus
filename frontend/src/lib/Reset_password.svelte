@@ -1,44 +1,45 @@
 <script>
-    import { Col, Container, Row, Styles, Icon, Input, Button, Form, FormGroup, Image, Card  } from 'sveltestrap';
+    import { Label, Col, Container, Row, Styles, Icon, Input, Button, Form, FormGroup, Image, Card  } from 'sveltestrap';
     import { Router, Link, Route } from "svelte-routing";
     import Home from './Home.svelte';
     import { navigate } from "svelte-routing";
     import {usuario} from "../utils/store";
 
-	let username = 'meme@maderasrafa.cl'
-	let password = 'memito123'
-	let result = null
+	let email = 'mandarino@maderasrafa.cl'
 
+    let last_login = null
+    let usuario_activo = true
+    let usuario_administrador = false
+    
+    
+    
+	let result = null
+    
     let error_ = false;
 
-    async function login () {
+    async function solicitar_password () {
         try {
-            const res = await fetch('http://127.0.0.1:8000', {
+            const res = await fetch('http://127.0.0.1:8000/api/usuario/', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    username,
-                    password
+                    email,
                 })
             })
             const datos = await res.json()
             result = JSON.stringify(datos);
-            if(datos.user.rol != null)
-            {
-                $usuario = datos.user;
-                navigate("/home", {replace:true});
-            }else{
-                error_ = true;
-            }
+
+            navigate("/", {replace:true});
+
         } catch (error) {
             
         }
 	}
 
-    let register = () => navigate("/register", {replace:true});
+    // let register = () => navigate("/home", {replace:true});
 ;
 
     
@@ -47,25 +48,16 @@
 <Image alt="Icarus Airline" src="images/IcarusAirline.png" />
 <main class="form-signin"> 
     
-    <Form>
+    <Form> 
         <div class="form-floating">
             <FormGroup floating label="Email">
-                <Input class="h3 mb-3 fw-normal" bind:value={username} />
+                <Input class="h3 mb-3 fw-normal" bind:value={email} />
             </FormGroup>
-        </div>
-        
-        <div>
-            <FormGroup floating label="Contraseña">
-                <Input class="h3 mb-3 fw-normal" bind:value={password}/>
-                <a href="/reset_password"> ¿olvidó su contraseña?</a>
-            </FormGroup>
-        </div>
-        
+        </div> 
+
         <div>
             <div class="row">
-
-                <button type="button" class="h3 mt-3 fw-normal btn boton_login" on:click={login}>Iniciar sesión</button>
-                <button type="button" class="h3 mt-3 fw-normal btn boton_login" on:click={register}>Registrarse</button>
+                <button type="button" class="h3 mt-3 fw-normal btn boton_login" on:click={solicitar_password}>Solicitar Contraseña</button>
             </div>
         </div>
         
