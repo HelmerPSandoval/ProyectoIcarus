@@ -1,10 +1,29 @@
 from multiprocessing import managers
 from pyexpat import model
 from re import T
-
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 
-class Usuario(models.Model):
+
+class UsuarioManager(BaseUserManager):
+    def create_user(self,email,nombre,password = None):
+        if not email:
+            raise ValueError('Debe tener email')
+
+        usuario =self.model(nombre=nombre,email=self.normalize_email(email))
+
+        usuario.set_password(password)
+        usuario.save()
+        return usuario
+
+    def create_superuser(self,nombre,email,password):
+        usuario =self.create_user(email=self.normalize_email(email),nombre=nombre, password=password)
+
+        usuario.usuario_administrador =True
+        usuario.save()
+        return usuario
+
+class Usuario(AbstractBaseUser):
 
     """
     Este es el modelo del Usuario.
@@ -21,20 +40,42 @@ class Usuario(models.Model):
         fecha_nacimiento {date} -- fecha que indica la fecha de nacimiento del usuario
 
     """
-
+    nombre =models.CharField(max_length = 255, unique= True, null=True)
+    apellido = models.CharField(max_length = 255, null= True)
+    email = models.EmailField(max_length = 255, unique= True)
+    #password = models.CharField(max_length = 255)
     rut = models.CharField(primary_key = True, max_length = 255, unique = True)
-    nombre = models.CharField(max_length = 255)
-    apellido = models.CharField(max_length = 255)
-    email = models.EmailField(max_length = 255)
-    password = models.CharField(max_length = 255)
-    rol = models.IntegerField()
-    sexo = models.CharField(max_length = 255)
-    telefono = models.IntegerField()
-    fecha_nacimiento = models.DateField()
+    rol = models.IntegerField(null= True)
+    sexo = models.CharField(max_length = 255,null= True)
+    telefono = models.IntegerField(null= True)
+    fecha_nacimiento = models.DateField(null= True)
+    usuario_activo = models.BooleanField(default=True)
+    usuario_administrador = models.BooleanField(default= False)
+    objects= UsuarioManager()
+
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS= ['']
     
     class Meta:
         managed = True
 
+
+    def __str__(self):
+        return f'{self.nombre}'
+    
+    def has_perm(self,perm,obj = None):
+        return True
+
+    def has_module_perms(self,app_label):
+        return True
+    
+    @property
+    def is_staff(self):
+        return self.usuario_administrador
+
+
+        
 class Reserva(models.Model):
 
     """

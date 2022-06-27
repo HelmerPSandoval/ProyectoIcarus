@@ -3,6 +3,7 @@ from rest_framework import serializers
 from rest_framework.views import APIView
 from rest_framework import status
 
+<<<<<<< HEAD
 from icarusProjectApp.models import (
 
     Vuelo,
@@ -137,3 +138,5 @@ class AvionAPIView(APIView):
             data = {'error': str(serializer.errors)}
 
         return Response(data = data)
+=======
+>>>>>>> USER-001-002
