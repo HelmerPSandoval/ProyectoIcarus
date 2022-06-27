@@ -40,15 +40,15 @@ class Usuario(AbstractBaseUser):
         fecha_nacimiento {date} -- fecha que indica la fecha de nacimiento del usuario
 
     """
-    nombre =models.CharField(max_length = 255, unique= True, null=True)
-    apellido = models.CharField(max_length = 255, null= True)
+    nombre =models.CharField(max_length = 255,null=True)
+    apellido = models.CharField(max_length = 255, null=True)
     email = models.EmailField(max_length = 255, unique= True)
-    #password = models.CharField(max_length = 255)
+    password = models.CharField(max_length = 255)
     rut = models.CharField(primary_key = True, max_length = 255, unique = True)
-    rol = models.IntegerField(null= True)
-    sexo = models.CharField(max_length = 255,null= True)
+    rol = models.IntegerField(null=True)
+    sexo = models.CharField(max_length = 255,null=True)
     telefono = models.IntegerField(null= True)
-    fecha_nacimiento = models.DateField(null= True)
+    fecha_nacimiento = models.DateField(null=True)
     usuario_activo = models.BooleanField(default=True)
     usuario_administrador = models.BooleanField(default= False)
     objects= UsuarioManager()
