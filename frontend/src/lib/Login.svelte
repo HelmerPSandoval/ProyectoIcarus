@@ -56,7 +56,7 @@
         
         <div>
             <FormGroup floating label="Contraseña">
-                <Input class="h3 mb-3 fw-normal" bind:value={password}/>
+                <Input class="h3 mb-3 fw-normal" type="password" bind:value={password}/>
                 <a href="/reset_password"> ¿olvidó su contraseña?</a>
             </FormGroup>
         </div>

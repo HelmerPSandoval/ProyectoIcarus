@@ -5,6 +5,7 @@
   import { Router, Link, Route } from "svelte-routing";
 import Register from './lib/Register.svelte';
 import ResetPassword from './lib/Reset_password.svelte';
+import RegistrarVuelo from './lib/Registrar_vuelo.svelte';
 </script>
 
 <main>
@@ -25,6 +26,11 @@ import ResetPassword from './lib/Reset_password.svelte';
 		<Route path="/reset_password">
 			<ResetPassword></ResetPassword>
 		</Route>
+		
+    <Route path="/registrar_vuelo">
+			<RegistrarVuelo></RegistrarVuelo>
+		</Route>
+
 
 	</Router>
 </main>

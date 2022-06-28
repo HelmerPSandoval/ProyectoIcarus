@@ -5,15 +5,15 @@
     import { navigate } from "svelte-routing";
     import {usuario} from "../utils/store";
 
-	let rut = '199784242'
-	let password = '123'
-	let nombre = 'mandarino'
-	let apellido = 'wolfgang'
-	let email = 'mandarino@maderasrafa.cl'
+	let rut = ''
+	let password = ''
+	let nombre = ''
+	let apellido = ''
+	let email = ''
 	let rol = '2'
-	let sexo = 'masculino'
-	let telefono = '123456789'
-	let fecha_nacimiento = '12-11-1998'
+	let sexo = ''
+	let telefono = ''
+	let fecha_nacimiento = ''
 
     let last_login = null
     let usuario_activo = true

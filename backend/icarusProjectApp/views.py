@@ -47,7 +47,7 @@ class VueloAPIView(APIView):
 
         if (VueloCustomSerializer.validando_vuelo(data) and VueloCustomSerializer.validando_ciudad(data) and VueloCustomSerializer.validando_avion_asociado(data)):
         
-            serializer = VueloCustomSerializer(data)
+            serializer = VueloCustomSerializer(data = request.data)
 
             if serializer.is_valid():                      
 
@@ -99,6 +99,15 @@ class VueloListAPIView(APIView):
             return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
         else:
             data = {'error': str(serializer.errors)}
+
+    def delete(self, request, pk):
+
+        vuelo = Vuelo.objects.filter(id = pk)
+
+        vuelo.delete()
+
+        return Response({"Success": "se elimino el vuelo correctamente."})
+
 
 class CiudadAPIView(APIView):
 
