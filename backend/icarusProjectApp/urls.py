@@ -2,7 +2,7 @@
 
 from django.urls import path, include
 from rest_framework import routers
-from .viewsets import usuario_api_view, usuario_detail_api_view#, UsuarioViewSet, UsuarioViewSetLog
+from .views import usuario_api_view, usuario_detail_api_view#, UsuarioViewSet, UsuarioViewSetLog
 
 
 urlpatterns = [

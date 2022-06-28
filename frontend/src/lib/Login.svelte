@@ -5,8 +5,8 @@
     import { navigate } from "svelte-routing";
     import {usuario} from "../utils/store";
 
-	let username = 'meme@maderasrafa.cl'
-	let password = 'memito123'
+	let username = 'mandarino@maderasrafa.cl'
+	let password = '123'
 	let result = null
 
     let error_ = false;
@@ -56,7 +56,7 @@
         
         <div>
             <FormGroup floating label="Contraseña">
-                <Input class="h3 mb-3 fw-normal" bind:value={password}/>
+                <Input class="h3 mb-3 fw-normal" type="password" bind:value={password}/>
                 <a href="/reset_password"> ¿olvidó su contraseña?</a>
             </FormGroup>
         </div>

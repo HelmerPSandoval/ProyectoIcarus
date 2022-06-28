@@ -40,15 +40,15 @@ class Usuario(AbstractBaseUser):
         fecha_nacimiento {date} -- fecha que indica la fecha de nacimiento del usuario
 
     """
-    nombre =models.CharField(max_length = 255, unique= True, null=True)
-    apellido = models.CharField(max_length = 255, null= True)
+    nombre =models.CharField(max_length = 255,null=True)
+    apellido = models.CharField(max_length = 255, null=True)
     email = models.EmailField(max_length = 255, unique= True)
-    #password = models.CharField(max_length = 255)
+    password = models.CharField(max_length = 255)
     rut = models.CharField(primary_key = True, max_length = 255, unique = True)
-    rol = models.IntegerField(null= True)
-    sexo = models.CharField(max_length = 255,null= True)
+    rol = models.IntegerField(null=True)
+    sexo = models.CharField(max_length = 255,null=True)
     telefono = models.IntegerField(null= True)
-    fecha_nacimiento = models.DateField(null= True)
+    fecha_nacimiento = models.DateField(null=True)
     usuario_activo = models.BooleanField(default=True)
     usuario_administrador = models.BooleanField(default= False)
     objects= UsuarioManager()
@@ -189,16 +189,18 @@ class Vuelo(models.Model):
     """
 
     id = models.AutoField(primary_key = True, unique = True)
-    fecha_salida = models.DateTimeField()
-    fecha_llegada = models.DateTimeField()
+    fecha_salida = models.DateField()
+    hora_salida = models.TimeField()
+    fecha_llegada = models.DateField()
+    hora_llegada = models.TimeField()
     id_ciudad_origen = models.ForeignKey(
         Ciudad,
-        related_name = 'ciudad_origen',
+        related_name = 'id_ciudad_origen',
         on_delete=models.CASCADE
     )
     id_ciudad_destino = models.ForeignKey(
         Ciudad,
-        related_name= 'ciudad_destino',
+        related_name= 'id_ciudad_destino',
         on_delete=models.CASCADE
     )
     id_avion_asociado = models.ForeignKey(
