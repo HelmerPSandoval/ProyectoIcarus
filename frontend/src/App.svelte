@@ -3,9 +3,10 @@
   import Login from './lib/Login.svelte';
   import Home from './lib/Home.svelte'
   import { Router, Link, Route } from "svelte-routing";
-import Register from './lib/Register.svelte';
-import ResetPassword from './lib/Reset_password.svelte';
-import RegistrarVuelo from './lib/Registrar_vuelo.svelte';
+  import Register from './lib/Register.svelte';
+  import ResetPassword from './lib/Reset_password.svelte';
+  import RegistrarVuelo from './lib/Registrar_vuelo.svelte';
+import EditarVuelo from './lib/Editar_vuelo.svelte';
 </script>
 
 <main>
@@ -30,7 +31,10 @@ import RegistrarVuelo from './lib/Registrar_vuelo.svelte';
     <Route path="/registrar_vuelo">
 			<RegistrarVuelo></RegistrarVuelo>
 		</Route>
-
+    
+    <Route path="/editar_vuelo">
+			<EditarVuelo></EditarVuelo>
+		</Route>
 
 	</Router>
 </main>

@@ -15,6 +15,9 @@
           
 	}
 
+    let goto_r_vuelo = () => navigate("/registrar_vuelo", {replace:true});
+    let goto_e_vuelo = () => navigate("/editar_vuelo", {replace:true});
+
     
 </script>
 
@@ -42,14 +45,14 @@
 
                     <div class="list-group justify-content-left">
                         {#if $usuario.rol==1}
-                        <Button type="button" 
+                        <Button type="button" on:click={goto_r_vuelo}
                              class="list-group-item list-group-item-action">
                             <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1">Agregar Nuevo Vuelo</h5>
                             </div>
                             <p class="mb-1">Permite a un usuario con derechos de administrador crear una nueva ruta de vuelos.</p>
                         </Button>
-                        <Button type="button" 
+                        <Button type="button" on:click={goto_e_vuelo} 
                              class="list-group-item list-group-item-action">
                             <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1">Editar Vuelo</h5>

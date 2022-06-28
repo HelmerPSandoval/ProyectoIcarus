@@ -53,7 +53,7 @@
             console.log(datos)
             if(!datos.email && !datos.rut && !datos.nombre)
             { 
-                navigate("/", {replace:true});
+                navigate("/home", {replace:true});
             }else{
                 error_ = true;
             }

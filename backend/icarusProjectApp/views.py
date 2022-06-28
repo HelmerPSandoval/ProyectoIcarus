@@ -59,7 +59,9 @@ class VueloAPIView(APIView):
                 
                 vuelo_nuevo = Vuelo.objects.create(**data_valida)
         
-                data = VueloSerializer(vuelo_nuevo).data            
+                data = VueloSerializer(vuelo_nuevo).data  
+                return Response({"Return": 69,"Mensaje": "El vuelo ha sido creado correctamente."})
+          
 
             else:
 

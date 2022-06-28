@@ -13,22 +13,57 @@
 	let id_ciudad_origen = 0
 	let id_ciudad_destino = 0
 	let id_avion_asociado = 0
-
+    let id = 0 //id de vuelo
+    let vuelos = []
     
+    //llenar dropdown id de vuelo
+    onMount(async () => {
+        const response = await fetch('http://127.0.0.1:8000/vuelos');
+        const vuelos_json = await response.json();
+        
+        for(let i=0; i<vuelos_json.length;i++){
+
+            vuelos[i] = vuelos_json[i].id
+
+
+            fecha_salida
+        }
+    })
+
+
+    //llenar datos del vuelo luego de seleccionar un id de vuelo en el dropdown
+    function llenar_datos () {
+                
+        fetch(`http://127.0.0.1:8000/vuelo/${id}`)
+        .then( res => res.json())
+        .then(data => {
+            fecha_salida = data.fecha_salida;
+            hora_salida = data.hora_salida;
+            fecha_llegada = data.fecha_llegada;
+            hora_llegada = data.hora_llegada;
+            hora_salida = data.hora_salida;
+            id_ciudad_origen = data.id_ciudad_origen;
+            id_ciudad_destino = data.id_ciudad_destino;
+            id_avion_asociado = data.id_avion_asociado;
+
+        })
+    }
+
+
+
 	let result = null
-    
     let error_ = false;
-    console.log($usuario)
 
-    async function registrar_vuelo () {
+    async function editar_vuelo () {
         try {
-            const res = await fetch('http://127.0.0.1:8000/vuelos/', {
-                method: 'POST',
+            const res = await fetch(`http://127.0.0.1:8000/vuelo/${id}`, {
+                method: 'PUT',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
+                    id,
                     fecha_salida,
                     hora_salida,
                     fecha_llegada,
@@ -41,6 +76,7 @@
             const datos = await res.json()
             result = JSON.stringify(datos);
             console.log(result)
+
             if(datos.Return == 69)
             { 
                 navigate("/home", {replace:true});
@@ -54,7 +90,8 @@
 	}
 
     let inicio = () => navigate("/", {replace:true});
-;
+    ;
+    let ver_id_vuelo = () =>console.log(id);
 
     
 </script>
@@ -67,6 +104,17 @@
 <main class="form-signin"> 
     
     <Form>
+        <div>
+            <FormGroup floating label="Vuelo">
+            <select class="form-select mb-3" aria-label="Default select example" bind:value={id} on:change={llenar_datos}>
+                {#each vuelos as _vuelo}
+                <option value="{_vuelo}">{_vuelo}</option>                  
+                {/each}
+                
+              </select>
+            </FormGroup>
+        </div>
+
         <div>
             <FormGroup floating label="Fecha Salida">
                 <Input class="h3 mb-3 fw-normal" type="date" bind:value={fecha_salida}/>
@@ -111,7 +159,7 @@
 
         <div>
             <div class="row">
-                <button type="button" class="h3 mt-3 fw-normal btn boton_login" on:click={registrar_vuelo}>Registrar Vuelo</button>
+                <button type="button" class="h3 mt-3 fw-normal btn boton_login" on:click={editar_vuelo}>Editar Vuelo</button>
             </div>
         </div>
         
