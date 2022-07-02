@@ -1,14 +1,14 @@
 <script>
-    import { Col, Container, Row, Styles, Icon, Input, Button, Form, FormGroup, Image, Card  } from 'sveltestrap';
+    import { Alert, Col, Container, Row, Styles, Icon, Input, Button, Form, FormGroup, Image, Card  } from 'sveltestrap';
     import { Router, Link, Route } from "svelte-routing";
     import Home from './Home.svelte';
     import { navigate } from "svelte-routing";
-    import {usuario} from "../utils/store";
+    import {usuario, mensaje} from "../utils/store";
 
 	let username = 'mandarino@maderasrafa.cl'
 	let password = '123'
 	let result = null
-
+    console.log($mensaje)
     let error_ = false;
 
     async function login () {
@@ -29,6 +29,7 @@
             if(datos.user.rol != null)
             {
                 $usuario = datos.user;
+                $mensaje=null;
                 navigate("/home", {replace:true});
             }else{
                 error_ = true;
@@ -45,6 +46,11 @@
 </script>
 
 <Image alt="Icarus Airline" src="images/IcarusAirline.png" />
+{#if $mensaje != null} 
+    <div style="margin-left: 400px; margin-right: 400px;">
+        <Alert color="info" dismissible>{$mensaje}</Alert>
+    </div>
+{/if}
 <main class="form-signin"> 
     
     <Form>
@@ -91,12 +97,13 @@
     .boton_login {
         background-color: #0b5394;
         color: white;
-      }
-      .boton_login:hover {
-        background-color: #0d68ba;
-        color: white;
-      }
+    }
+    .boton_login:hover {
+    background-color: #0d68ba;
+    color: white;
+    }
 
+    
    
 
   </style>

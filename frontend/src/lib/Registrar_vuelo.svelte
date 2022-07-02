@@ -1,9 +1,9 @@
 <script>
-    import { Label, Col, Container, Row, Styles, Icon, Input, Button, Form, FormGroup, Image, Card  } from 'sveltestrap';
+    import { Alert, Label, Col, Container, Row, Styles, Icon, Input, Button, Form, FormGroup, Image, Card  } from 'sveltestrap';
     import { Router, Link, Route } from "svelte-routing";
     import Home from './Home.svelte';
     import { navigate } from "svelte-routing";
-    import {usuario} from "../utils/store";
+    import {usuario, mensaje} from "../utils/store";
     import { onMount } from "svelte";
 
 	let fecha_salida = ''
@@ -18,7 +18,8 @@
 	let result = null
     
     let error_ = false;
-    console.log($usuario)
+    console.log("usuario:",$usuario);
+    console.log("mensaje:",$mensaje);
 
     async function registrar_vuelo () {
         try {
@@ -43,7 +44,8 @@
             console.log(result)
             if(datos.Return == 69)
             { 
-                navigate("/home", {replace:true});
+                
+                $mensaje = "Vuelo registrado con éxito.";
             }else{
                 error_ = true;
             }
@@ -53,17 +55,23 @@
         }
 	}
 
-    let inicio = () => navigate("/", {replace:true});
-;
+    let home = () => {
+        $mensaje=null;
+        navigate("/home", {replace:true}); 
+    }
 
     
 </script>
 
 <Styles />
-<button type="button" class="h3 mt-3 fw-normal btn boton_icarus" on:click={inicio}><Icon name="house-door-fill" /></button>
-
-<br>
-<Image alt="Icarus Airline" src="images/IcarusAirline.png" />
+<button type="button" class="h3 mt-3 fw-normal btn boton_icarus" on:click={home}><Icon name="house-door-fill" /></button>
+<h1>Registrar nuevo vuelo</h1>
+<h4>Ingrese la información del vuelo</h4>
+{#if $mensaje != null} 
+    <div class="mt-1" style="margin-left: 400px; margin-right: 400px;">
+        <Alert color="info" dismissible>{$mensaje}</Alert>
+    </div>
+{/if}
 <main class="form-signin"> 
     
     <Form>
@@ -120,20 +128,13 @@
 
 </main>
 <style>
-    
-
     .form-signin {
-    width: 100%;
-    max-width: 330px;
-    padding: 15px;
-    margin: auto;
+        width: 100%;
+        max-width: 330px;
+        padding: 15px;
+        margin: auto;
     }
-
-
-    .form-signin .form-floating:focus-within {
-    z-index: 2;
-    }
-
+    
     .boton_icarus {
         background-color: #0b5394;
         color: white;
@@ -142,19 +143,27 @@
         top: 10px;
         left: 15px;
 
-      }
-      .boton_icarus:hover {
+    }
+    .boton_icarus:hover {
         background-color: #0d68ba;
         color: white;
-      }
+    }
 
-      .boton_login {
+    .boton_login {
         background-color: #0b5394;
         color: white;
-      }
-      .boton_login:hover {
+    }
+    .boton_login:hover {
         background-color: #0d68ba;
         color: white;
-      }
+    }
+    h1 {
+        color: #0b5394;
+        font-weight: bold;
+    }
+    h4 {
+        color: #0b5394;
+        
+    }
 
   </style>

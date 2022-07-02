@@ -1,9 +1,9 @@
 <script>
-    import { Label, Col, Container, Row, Styles, Icon, Input, Button, Form, FormGroup, Image, Card  } from 'sveltestrap';
+    import { Alert, Label, Col, Container, Row, Styles, Icon, Input, Button, Form, FormGroup, Image, Card  } from 'sveltestrap';
     import { Router, Link, Route } from "svelte-routing";
     import Home from './Home.svelte';
     import { navigate } from "svelte-routing";
-    import {usuario} from "../utils/store";
+    import {usuario, mensaje} from "../utils/store";
     import { onMount } from "svelte";
 
 	let fecha_salida = ''
@@ -16,6 +16,8 @@
     let id = 0 //id de vuelo
     let vuelos = []
     
+    console.log("usuario:",$usuario);
+    console.log("mensaje:",$mensaje);
     //llenar dropdown id de vuelo
     onMount(async () => {
         const response = await fetch('http://127.0.0.1:8000/vuelos');
@@ -24,9 +26,6 @@
         for(let i=0; i<vuelos_json.length;i++){
 
             vuelos[i] = vuelos_json[i].id
-
-
-            fecha_salida
         }
     })
 
@@ -49,10 +48,7 @@
         })
     }
 
-
-
 	let result = null
-    let error_ = false;
 
     async function editar_vuelo () {
         try {
@@ -75,32 +71,34 @@
             })
             const datos = await res.json()
             result = JSON.stringify(datos);
-            console.log(result)
+            //console.log(datos)
 
-            if(datos.Return == 69)
-            { 
-                navigate("/home", {replace:true});
-            }else{
-                error_ = true;
-            }
+            $mensaje="Vuelo editado con éxito.";
+            
 
         } catch (error) {
             
         }
 	}
 
-    let inicio = () => navigate("/", {replace:true});
-    ;
+    let home = () => {
+        $mensaje=null;
+        navigate("/home", {replace:true}); 
+    }
     let ver_id_vuelo = () =>console.log(id);
 
     
 </script>
 
 <Styles />
-<button type="button" class="h3 mt-3 fw-normal btn boton_icarus" on:click={inicio}><Icon name="house-door-fill" /></button>
-
-<br>
-<Image alt="Icarus Airline" src="images/IcarusAirline.png" />
+<button type="button" class="h3 mt-3 fw-normal btn boton_icarus" on:click={home}><Icon name="house-door-fill" /></button>
+<h1>Editar vuelo</h1>
+<h4>Ingrese la información del vuelo</h4>
+{#if $mensaje != null} 
+    <div class="mt-1" style="margin-left: 400px; margin-right: 400px;">
+        <Alert color="info" dismissible>{$mensaje}</Alert>
+    </div>
+{/if}
 <main class="form-signin"> 
     
     <Form>
@@ -171,10 +169,10 @@
     
 
     .form-signin {
-    width: 100%;
-    max-width: 330px;
-    padding: 15px;
-    margin: auto;
+        width: 100%;
+        max-width: 330px;
+        padding: 15px;
+        margin: auto;
     }
 
 
@@ -204,5 +202,12 @@
         background-color: #0d68ba;
         color: white;
       }
-
-  </style>
+    h1 {
+        color: #0b5394;
+        font-weight: bold;
+    }
+    h4 {
+        color: #0b5394;
+        
+    }
+</style>
