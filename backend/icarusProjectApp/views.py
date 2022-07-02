@@ -10,7 +10,6 @@ from rest_framework.decorators import api_view, action
 from pickle import TRUE
 import re
 from urllib import response
-from backend.icarusProjectApp.models import Reserva
 
 from icarusProjectApp.models import (
 
@@ -18,6 +17,8 @@ from icarusProjectApp.models import (
     Ciudad,
     Avion,
     Usuario,
+    Reserva,
+    Reserva_Vuelo,
 )
 
 from icarusProjectApp.serializers import (
@@ -31,6 +32,8 @@ from icarusProjectApp.serializers import (
     TestUsuarioSerializer,
     UsuarioSerializer,
     UsuarioTokenSerializer,
+    ReservaSerializer,
+    ReservaCustomSerializer,
 
 )
 

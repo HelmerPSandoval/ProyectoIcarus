@@ -101,8 +101,20 @@ class UsuarioSerializer(serializers.ModelSerializer):
         updated_usuario.save()
         return updated_usuario
 
+class ReservaSerializer(serializers.ModelSerializer):
 
+    class Meta:
+        model = Reserva
+        fields = '__all__'
 
+class ReservaCustomSerializer(serializers.Serializer):
+
+    tarjeta_credito = serializers.DateField(required = True)
+    numero_tarjeta = serializers.TimeField(required = True)
+    fecha_vencimiento = serializers.DateField(required = True)
+    cvc = serializers.TimeField(required = True)
+    rut_usuario = serializers.IntegerField(required = True)
+    
 class TestUsuarioSerializer(serializers.Serializer):
     rut = serializers.CharField()
     nombre = serializers.CharField()
