@@ -1,5 +1,5 @@
 <script>
-    import { Alert, Label, Col, Container, Row, Styles, Icon, Input, Button, Form, FormGroup, Image, Card  } from 'sveltestrap';
+    import { Alert, Label, Col, Container, Row, Styles, Icon, Input, Button, Form, FormGroup, Modal, ModalBody, ModalHeader, ModalFooter  } from 'sveltestrap';
     import { Router, Link, Route } from "svelte-routing";
     import Home from './Home.svelte';
     import { navigate } from "svelte-routing";
@@ -14,6 +14,28 @@
 	let id_ciudad_destino = 0
 	let id_avion_asociado = 0
 
+    //Rellenar dropdowns de ciudades y avión
+    let ciudades = []
+    let aviones = []
+
+    onMount(async () => {
+        const response = await fetch('http://127.0.0.1:8000/ciudades/');
+        const ciudades_json = await response.json();
+        
+        for(let i=0; i<ciudades_json.length;i++){
+            
+            ciudades[i] = ciudades_json[i]
+        }
+    })
+    onMount(async () => {
+        const response = await fetch('http://127.0.0.1:8000/aviones/');
+        const aviones_json = await response.json();
+        
+        for(let i=0; i<aviones_json.length;i++){
+            
+            aviones[i] = aviones_json[i]
+        }
+    })
     
 	let result = null
     
@@ -59,7 +81,20 @@
         $mensaje=null;
         navigate("/home", {replace:true}); 
     }
+    
+    //logica de Modal Ciudad
+    let open = false;
+    const toggle = () => {
+        size = undefined;
+        open = !open;
+    };
+    //logica de Modal Avion
+    let size = 'sm';
+    let open_a = false;
 
+    const toggleSm = () => {
+        open_a = !open_a;
+    };
     
 </script>
 
@@ -72,68 +107,144 @@
         <Alert color="info" dismissible>{$mensaje}</Alert>
     </div>
 {/if}
-<main class="form-signin"> 
-    
-    <Form>
-        <div>
-            <FormGroup floating label="Fecha Salida">
-                <Input class="h3 mb-3 fw-normal" type="date" bind:value={fecha_salida}/>
-            </FormGroup>
-        </div>
-        
-        <div>
-            <FormGroup floating label="Hora Salida">
-                <Input class="h3 mb-3 fw-normal" type="time" bind:value={hora_salida}/>
-            </FormGroup>
-        </div>
+<main > 
+    <div class="container">
+        <div class="row mx-auto mt-4" style="width: 300px;">
+            <div class="col">
 
-        <div>
-            <FormGroup floating label="Fecha Llegada">
-                <Input class="h3 mb-3 fw-normal" type="date" bind:value={fecha_llegada}/>
-            </FormGroup>
-        </div>
-
-        <div>
-            <FormGroup floating label="Hora Llegada">
-                <Input class="h3 mb-3 fw-normal" type="time" bind:value={hora_llegada}/>
-            </FormGroup>
-        </div>
-
-        <div class="form-floating">
-            <FormGroup floating label="Id Ciudad Origen">
-                <Input class="h3 mb-3 fw-normal" bind:value={id_ciudad_origen} />
-            </FormGroup>
-        </div>  
-        
-        <div class="form-floating">
-            <FormGroup floating label="Id Ciudad Destino">
-                <Input class="h3 mb-3 fw-normal" bind:value={id_ciudad_destino} />
-            </FormGroup>
-        </div>  
-
-        <div>
-            <FormGroup floating label="Id Avión">
-                <Input class="h3 mb-3 fw-normal" bind:value={id_avion_asociado}/>
-            </FormGroup>
-        </div>
-
-        <div>
-            <div class="row">
-                <button type="button" class="h3 mt-3 fw-normal btn boton_login" on:click={registrar_vuelo}>Registrar Vuelo</button>
+                <Form>
+                    <div>
+                        <FormGroup floating label="Fecha Salida">
+                            <Input class="h3 mb-3 fw-normal" type="date" bind:value={fecha_salida}/>
+                        </FormGroup>
+                    </div>
+                    
+                    <div>
+                        <FormGroup floating label="Hora Salida">
+                            <Input class="h3 mb-3 fw-normal" type="time" bind:value={hora_salida}/>
+                        </FormGroup>
+                    </div>
+            
+                    <div>
+                        <FormGroup floating label="Fecha Llegada">
+                            <Input class="h3 mb-3 fw-normal" type="date" bind:value={fecha_llegada}/>
+                        </FormGroup>
+                    </div>
+            
+                    <div>
+                        <FormGroup floating label="Hora Llegada">
+                            <Input class="h3 mb-3 fw-normal" type="time" bind:value={hora_llegada}/>
+                        </FormGroup>
+                    </div>
+            
+                    <div class="form-floating">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col-9">
+                                <div>
+                                    <FormGroup floating label="Ciudad Origen">
+                                    <select class="form-select mb-3" aria-label="Default select example" bind:value={id_ciudad_origen}>
+                                        {#each ciudades as ciudad}
+                                        <option value="{ciudad.id}">[{ciudad.id}] - {ciudad.nombre}</option>                  
+                                        {/each}
+                                        
+                                    </select>
+                                    </FormGroup>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <Modal isOpen={open} backdrop="static" {toggle}>
+                                    <ModalHeader>Agregar Ciudad</ModalHeader>
+                                    <ModalBody>
+                                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                                      tempor incididunt ut labore et dolore magna aliqua.
+                                    </ModalBody>
+                                    <ModalFooter>
+                                        <button type="button" class="btn boton_login" on:click={toggle}>Agregar</button>
+                                        <button type="button" class="btn btn-secondary" on:click={toggle}>Cancelar</button>
+                                    </ModalFooter>
+                                </Modal>
+                                <button type="button" class="btn boton_login mt-2 offset-md-2" on:click={toggle}><Icon name="plus" /></button>
+                            </div>
+                        </div>
+                    </div>  
+                    
+                    <div class="form-floating">
+                        <div class="row d-flex justify-content-between">
+            
+                            <div class="col-9">
+                                <FormGroup floating label="Ciudad Destino">
+                                    <select class="form-select mb-3" aria-label="Default select example" bind:value={id_ciudad_destino}>
+                                        {#each ciudades as ciudad}
+                                        <option value="{ciudad.id}">[{ciudad.id}] - {ciudad.nombre}</option>                  
+                                        {/each}
+                                    </select>
+                                </FormGroup>
+                            </div>
+                            <div class="col">
+                                <Modal isOpen={open} backdrop="static" {toggle}>
+                                    <ModalHeader>Agregar Ciudad</ModalHeader>
+                                    <ModalBody>
+                                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                                      tempor incididunt ut labore et dolore magna aliqua.
+                                    </ModalBody>
+                                    <ModalFooter>
+                                        <button type="button" class="btn boton_login" on:click={toggle}>Agregar</button>
+                                        <button type="button" class="btn btn-secondary" on:click={toggle}>Cancelar</button>
+                                    </ModalFooter>
+                                </Modal>
+                                <button type="button" class="btn boton_login mt-2 offset-md-2" on:click={toggle}><Icon name="plus" /></button>
+                            </div>
+                        </div>
+                    </div>  
+            
+                    <div>
+                        <div class="row d-flex justify-content-between">
+                            <div class="col-9">
+                                <FormGroup floating label="Avión">
+                                    <select class="form-select mb-3" aria-label="Default select example" bind:value={id_avion_asociado}>
+                                        {#each aviones as avion}
+                                        <option value="{avion.id}">[{avion.id}] - {avion.modelo}</option>                  
+                                        {/each}  
+                                    </select>                                
+                                </FormGroup>                
+                            </div>
+                            <div class="col">
+                                <Modal isOpen={open_a} backdrop="static" {toggle} {size}>
+                                    <ModalHeader>Agregar Avión</ModalHeader>
+                                    <ModalBody>
+                                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                                      tempor incididunt ut labore et dolore magna aliqua.
+                                    </ModalBody>
+                                    <ModalFooter>
+                                        <button type="button" class="btn boton_login" on:click={toggleSm}>Agregar</button>
+                                        <button type="button" class="btn btn-secondary" on:click={toggleSm}>Cancelar</button>
+                                    </ModalFooter>
+                                  </Modal>
+                                <button type="button" class="btn boton_login mt-2 offset-md-2" on:click={toggleSm}><Icon name="plus" /></button>
+                            </div>
+                        </div> 
+                               
+                    </div>
+            
+                    <div>
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-7">
+                                <button type="button" class="h3 mt-3 fw-normal btn boton_login" on:click={registrar_vuelo}>Registrar Vuelo</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </Form>
             </div>
         </div>
-        
-    </Form>
+    </div>
+    
+    
 
 
 </main>
 <style>
-    .form-signin {
-        width: 100%;
-        max-width: 330px;
-        padding: 15px;
-        margin: auto;
-    }
+
     
     .boton_icarus {
         background-color: #0b5394;
@@ -165,5 +276,9 @@
         color: #0b5394;
         
     }
+    div {
+    text-align: justify;
+    text-justify: inter-word;
+    } 
 
   </style>
