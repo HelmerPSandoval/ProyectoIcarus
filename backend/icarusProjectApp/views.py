@@ -10,6 +10,7 @@ from rest_framework.decorators import api_view, action
 from pickle import TRUE
 import re
 from urllib import response
+from backend.icarusProjectApp.models import Reserva
 
 from icarusProjectApp.models import (
 
@@ -257,3 +258,57 @@ class Logout(APIView):
         token = Token.objects.filter(key = token).first()
         if token:
             user = token.user 
+
+@api_view(['GET','POST'])
+def reserva_api_view(request):
+
+    # list
+    if request.method == 'GET':
+
+        #queryset
+        reservas = Reserva.objects.all()
+        reservas_serializer = ReservaSerializer(reservas, many =True)
+        return Response(reservas_serializer.data, status = status.HTTP_200_OK)
+    
+    # create
+    elif request.method == 'POST':
+        reserva_serializer = ReservaSerializer(data=request.data)
+
+        # validacion
+        if reserva_serializer.is_valid():
+            reserva_serializer.save()
+
+            return Response({'message':'Reserva creada correctamente'}, status = status.HTTP_201_CREATED)
+
+        return Response(reserva_serializer.errors, status =status.HTTP_400_BAD_REQUEST)
+
+
+
+@api_view(['GET', 'PUT','DELETE'])
+def reserva_detail_api_view(request,pk=None):
+
+    # consulta
+    reserva = Reserva.objects.filter(id=pk).first()
+
+    # validacion
+    if reserva:
+
+        # retrieve
+        if request.method == 'GET':            
+            reserva_serializer = ReservaSerializer(reserva)
+            return Response(reserva_serializer.data, status = status.HTTP_200_OK)
+
+        #actualizar
+        elif request.method == 'PUT':           
+            reserva_serializer =ReservaSerializer(reserva, data =request.data)
+            if reserva_serializer.is_valid():
+                reserva_serializer.save()
+                return Response(reserva_serializer.data, status = status.HTTP_200_OK)
+            return Response(reserva_serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+ 
+        # eliminar
+        elif request.method == 'DELETE':            
+            reserva.delete()
+            return Response({'message':'Reserva eliminada correctamente!'}, status = status.HTTP_200_OK)
+
+    return Response({'message':'no se ha encontrado una reserva con estos datos'}, status = status.HTTP_400_BAD_REQUEST)
