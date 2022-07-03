@@ -222,15 +222,16 @@ def usuario_detail_api_view(request,pk=None):
             usuario_serializer =UsuarioSerializer(usuario, data =request.data)
             if usuario_serializer.is_valid():
                 usuario_serializer.save()
-                return Response(usuario_serializer.data, status = status.HTTP_200_OK)
-            return Response(usuario_serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+                return Response({"Return": 69,"Mensaje":'Usuario modificado correctamente.'}, status = status.HTTP_200_OK)
+            return Response({"Return":70,"Mensaje": usuario_serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
  
         # eliminar
         elif request.method == 'DELETE':            
             usuario.delete()
-            return Response({'message':'Usuario eliminado correctamente!'}, status = status.HTTP_200_OK)
+            return Response({"Return":69,"Mensaje": 'Usuario eliminado correctamente!'}, status = status.HTTP_200_OK)
 
-    return Response({'message':'no se ha encontrado un usuario con estos datos'}, status = status.HTTP_400_BAD_REQUEST)
+    return Response({"Return":70,"Mensaje":'No se ha encontrado un usuario con estos datos'}, status = status.HTTP_400_BAD_REQUEST)
+    
 
 
 class Login(ObtainAuthToken):
@@ -252,7 +253,7 @@ class Login(ObtainAuthToken):
                 return Response({'error':'Este usuario no pude iniciar sesión'}, status = status.HTTP_401_UNAUTHORIZED)
         else:
              return Response({'error':'Nombre de usuario o contraseña incorrectos.'}, status = status.HTTP_400_BAD_REQUEST)
-        return Response({'mensaje':'Hola desde response'}, status = status.HTTP_200_OK)
+        
 
 class Logout(APIView):
 
@@ -307,13 +308,13 @@ def reserva_detail_api_view(request,pk=None):
             reserva_serializer =ReservaSerializer(reserva, data =request.data)
             if reserva_serializer.is_valid():
                 reserva_serializer.save()
-                return Response(reserva_serializer.data, status = status.HTTP_200_OK)
-            return Response(reserva_serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+                return Response({"Return": 69,"Mensaje":'Reserva modificada correctamente.'}, status = status.HTTP_200_OK)
+            return Response({"Return":70,"Mensaje": reserva_serializer.errors}, status =status.HTTP_400_BAD_REQUEST)
  
         # eliminar
         elif request.method == 'DELETE':            
             reserva.delete()
-            return Response({'message':'Reserva eliminada correctamente!'}, status = status.HTTP_200_OK)
+            return Response({"Return": 69,"Mensaje":'Reserva eliminada correctamente!'}, status = status.HTTP_200_OK)
 
-    return Response({'message':'no se ha encontrado una reserva con estos datos'}, status = status.HTTP_400_BAD_REQUEST)
+    return Response({"Return":70,"Mensaje":'No se ha encontrado una reserva con estos datos'}, status = status.HTTP_400_BAD_REQUEST)
 
