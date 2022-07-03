@@ -10,13 +10,14 @@ from rest_framework.authtoken.models import Token
 
 
 #models
-from .models import Usuario, Reserva, Pago, Ciudad, Avion, Vuelo, Reserva_Vuelo
+from .models import Usuario, Reserva, Pago, Ciudad, Avion, Vuelo#, Reserva_Vuelo
 from icarusProjectApp.models import (
 
     Usuario,
     Vuelo,
     Ciudad,
     Avion,
+    Vuelo_reservas,
 )
 
 #serializers que definen la representacion de la api
@@ -109,11 +110,23 @@ class ReservaSerializer(serializers.ModelSerializer):
 
 class ReservaCustomSerializer(serializers.Serializer):
 
-    tarjeta_credito = serializers.DateField(required = True)
-    numero_tarjeta = serializers.TimeField(required = True)
+    tarjeta_credito = serializers.CharField(required = True)
+    numero_tarjeta = serializers.CharField(required = True)
     fecha_vencimiento = serializers.DateField(required = True)
-    cvc = serializers.TimeField(required = True)
-    rut_usuario = serializers.IntegerField(required = True)
+    cvc = serializers.CharField(required = True)
+    rut_usuario = serializers.CharField(required = True)
+
+
+
+class Vuelo_ReservaSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Vuelo_reservas
+        fields = '__all__'
+
+
+
+
     
 class TestUsuarioSerializer(serializers.Serializer):
     rut = serializers.CharField()

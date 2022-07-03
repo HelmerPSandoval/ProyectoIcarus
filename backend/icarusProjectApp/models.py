@@ -55,7 +55,7 @@ class Usuario(AbstractBaseUser):
 
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS= ['']
+    REQUIRED_FIELDS= ['nombre']
     
     class Meta:
         managed = True
@@ -193,6 +193,7 @@ class Vuelo(models.Model):
     hora_salida = models.TimeField()
     fecha_llegada = models.DateField()
     hora_llegada = models.TimeField()
+    reservas = models.ManyToManyField(Reserva, blank= True)
     id_ciudad_origen = models.ForeignKey(
         Ciudad,
         related_name = 'id_ciudad_origen',
@@ -211,27 +212,27 @@ class Vuelo(models.Model):
     class Meta:
         managed = True
 
-class Reserva_Vuelo (models.Model):
+# class Reserva_Vuelo(models.Model):
 
-    """
-    Este es el modelo Reserva_Vuelo.
+#     """
+#     Este es el modelo Reserva_Vuelo.
 
-    Campos:
-        id_reserva {foreign} -- relacion con la id de reserva del modelo Reserva
-        id_vuelo {foreign} -- relacion con la id del vuelo del modelo Vuelo
+#     Campos:
+#         id_reserva {foreign} -- relacion con la id de reserva del modelo Reserva
+#         id_vuelo {foreign} -- relacion con la id del vuelo del modelo Vuelo
 
-    """
+#     """
 
-    id_reserva = models.ForeignKey(
-        Reserva,
-        on_delete=models.CASCADE
-    )
-    id_vuelo = models.ForeignKey(
-        Vuelo,
-        on_delete=models.CASCADE
-    )
+#     id_reserva = models.ForeignKey(
+#         Reserva,
+#         on_delete=models.CASCADE
+#     )
+#     id_vuelo = models.ForeignKey(
+#         Vuelo,
+#         on_delete=models.CASCADE
+#     )
 
-    class Meta:
-        managed = True
+#     class Meta:
+#         managed = True
 
 

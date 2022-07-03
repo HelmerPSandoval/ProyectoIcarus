@@ -18,7 +18,7 @@ from icarusProjectApp.models import (
     Avion,
     Usuario,
     Reserva,
-    Reserva_Vuelo,
+    #Reserva_Vuelo,
 )
 
 from icarusProjectApp.serializers import (
@@ -315,3 +315,28 @@ def reserva_detail_api_view(request,pk=None):
             return Response({'message':'Reserva eliminada correctamente!'}, status = status.HTTP_200_OK)
 
     return Response({'message':'no se ha encontrado una reserva con estos datos'}, status = status.HTTP_400_BAD_REQUEST)
+
+
+
+@api_view(['GET','POST'])
+def vuelo_reserva_api_view(request):
+
+    # list
+    if request.method == 'GET':
+
+        #queryset
+        reservas = Reserva.objects.all()
+        reservas_serializer = ReservaSerializer(reservas, many =True)
+        return Response(reservas_serializer.data, status = status.HTTP_200_OK)
+    
+    # create
+    elif request.method == 'POST':
+        reserva_serializer = ReservaSerializer(data=request.data)
+
+        # validacion
+        if reserva_serializer.is_valid():
+            reserva_serializer.save()
+
+            return Response({'message':'Reserva creada correctamente'}, status = status.HTTP_201_CREATED)
+
+        return Response(reserva_serializer.errors, status =status.HTTP_400_BAD_REQUEST)
