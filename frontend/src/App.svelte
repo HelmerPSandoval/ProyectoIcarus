@@ -6,7 +6,8 @@
   import Register from './lib/Register.svelte';
   import ResetPassword from './lib/Reset_password.svelte';
   import RegistrarVuelo from './lib/Registrar_vuelo.svelte';
-import EditarVuelo from './lib/Editar_vuelo.svelte';
+  import EditarVuelo from './lib/Editar_vuelo.svelte';
+  import ListarPorCiudades from './lib/Listar_por_ciudades.svelte';
 </script>
 
 <main>
@@ -33,6 +34,14 @@ import EditarVuelo from './lib/Editar_vuelo.svelte';
 		</Route>
     
     <Route path="/editar_vuelo">
+			<EditarVuelo></EditarVuelo>
+		</Route>
+
+    <Route path="/listar_vuelos_c">
+			<ListarPorCiudades></ListarPorCiudades>
+		</Route>
+
+    <Route path="/listar_vuelos_f">
 			<EditarVuelo></EditarVuelo>
 		</Route>
 

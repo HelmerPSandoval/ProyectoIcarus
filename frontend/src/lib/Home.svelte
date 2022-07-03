@@ -25,12 +25,11 @@
 
     let goto_r_vuelo = () => navigate("/registrar_vuelo", {replace:true});
     let goto_e_vuelo = () => navigate("/editar_vuelo", {replace:true});
+    let goto_listar_vuelos_c = () => navigate("/listar_vuelos_c", {replace:true});
 
     
 </script>
 
-<Image fluid alt="Icarus Airline" src="images/IcarusAirline.png"/>
-<br>
 <Styles />
 <div>
     <button type="button" id="btn-logout" class="h3 mt-3 fw-normal btn boton_icarus" 
@@ -41,13 +40,13 @@
 
 <main > 
     <div class="container">
-        <div class="row mx-auto" style="width: 600px;">
+        <div class="row mx-auto mt-3" style="width: 600px;">
             <div class="row mx-3 justify-content-center">
                 <div class="col-md-7 card form-izq ml-3">
                     <h4 class="text-center">
                         {#if $usuario != null}    
                             {#if $usuario.rol==1}
-                            Funciones Admin
+                            Funciones Administrador
                             {:else}                
                             Funciones Cliente
                             {/if}
@@ -67,41 +66,55 @@
                             <div class="list-group justify-content-left">
                                 {#if $usuario != null} 
                                     {#if $usuario.rol==1}
-                                    <Button type="button" on:click={goto_r_vuelo}
+                                    <button type="button" on:click={goto_r_vuelo}
                                         class="list-group-item list-group-item-action">
                                         <div class="d-flex w-100 justify-content-between">
-                                            <h5 class="mb-1">Agregar Nuevo Vuelo</h5>
+                                            <h5 class="mb-1">Agregar Nuevo Vuelo <Icon name="file-earmark-plus" /></h5>
                                         </div>
                                         <p class="mb-1">Permite a un usuario con derechos de administrador crear una nueva ruta de vuelos.</p>
-                                    </Button>
-                                    <Button type="button" on:click={goto_e_vuelo} 
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                            Admin
+                                            
+                                        </span>
+                                    </button>
+                                    <button type="button" on:click={goto_e_vuelo} 
                                         class="list-group-item list-group-item-action">
                                         <div class="d-flex w-100 justify-content-between">
-                                            <h5 class="mb-1">Editar Vuelo</h5>
+                                            <h5 class="mb-1">Editar Vuelo <Icon name="pencil-square" /></h5>
                                         </div>
                                         <p class="mb-1">Permite a un usuario con derechos de administrador editar una ruta de vuelos existente.</p>
-                                    </Button>
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                            Admin
+                                            
+                                        </span>
+                                    </button>
                                     {/if}
                                     
                                 {/if}
-                                <Button class="list-group-item list-group-item-action">
+                                <button class="list-group-item list-group-item-action">
                                     <div class="d-flex w-100 justify-content-left">
-                                        <h5 class="mb-1">Reservar Vuelo</h5>
+                                        <h5 class="mb-1">Reservar Vuelo <Icon name="plus-circle" /></h5>
                                     </div>
                                     <p class="mb-1">Ver vuelos disponibles en el sistema y crear una reservación de vuelo.</p>
-                                </Button>
-                                <Button class="list-group-item list-group-item-action">
+                                </button>
+                                <button class="list-group-item list-group-item-action">
                                     <div class="d-flex w-100 justify-content-left">
-                                        <h5 class="mb-1">Listar Vuelos por Ciudad </h5>
+                                        <h5 class="mb-1">Mis Vuelos <Icon name="list" /></h5>
+                                    </div>
+                                    <p class="mb-1">Ver todos los vuelos reservados con opción para cancelar alguna reserva.</p>
+                                </button>
+                                <button class="list-group-item list-group-item-action" on:click={goto_listar_vuelos_c} >
+                                    <div class="d-flex w-100 justify-content-left">
+                                        <h5 class="mb-1">Listar Vuelos por Ciudad <Icon name="building" /></h5>
                                     </div>
                                     <p class="mb-1">Listar todos los vuelos disponibles para una ciudad específica y un destino particular.</p>
-                                </Button>
-                                <Button class="list-group-item list-group-item-action">
+                                </button>
+                                <button class="list-group-item list-group-item-action">
                                     <div class="d-flex w-100 justify-content-left">
-                                        <h5 class="mb-1">Listar Vuelos por Fecha </h5>
+                                        <h5 class="mb-1">Listar Vuelos por Fecha <Icon name="calendar-event" /></h5>
                                     </div>
                                     <p class="mb-1">Listar todos los vuelos disponibles en una fecha en particular desde una ciudad hacia un destino.</p>
-                                </Button>
+                                </button>
                                 
                             </div>
                         </div>
