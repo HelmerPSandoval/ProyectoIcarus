@@ -1,7 +1,7 @@
 #Django
 from wsgiref import validate
 from django.contrib.auth import password_validation, authenticate
-
+import re
 import email
 #from platformdirs import user_cache_dir
 #Django REST Framework
@@ -10,14 +10,14 @@ from rest_framework.authtoken.models import Token
 
 
 #models
-from .models import Usuario, Reserva, Pago, Ciudad, Avion, Vuelo#, Reserva_Vuelo
+from .models import Usuario, Reserva, Pago, Ciudad, Avion, Vuelo
 from icarusProjectApp.models import (
 
     Usuario,
     Vuelo,
     Ciudad,
     Avion,
-    Vuelo_reservas,
+    
 )
 
 #serializers que definen la representacion de la api
@@ -109,22 +109,11 @@ class ReservaSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ReservaCustomSerializer(serializers.Serializer):
-
-    tarjeta_credito = serializers.CharField(required = True)
-    numero_tarjeta = serializers.CharField(required = True)
-    fecha_vencimiento = serializers.DateField(required = True)
-    cvc = serializers.CharField(required = True)
-    rut_usuario = serializers.CharField(required = True)
-
-
-
-class Vuelo_ReservaSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Vuelo_reservas
-        fields = '__all__'
-
-
+    
+    fecha_reserva = serializers.DateField(required = True)
+    valor_reserva = serializers.IntegerField(required = True)
+    vuelo = serializers.IntegerField(required = True)
+    rut_usuario = serializers.IntegerField(required = True)
 
 
     
@@ -150,6 +139,11 @@ class TestUsuarioSerializer(serializers.Serializer):
             raise serializers.ValidationError('El email no puede contener el nombre')
 
         return value
+
+    def validate_password(self, value):
+        if re.search('[^A-Za-z0-9]', self.context['password']) is None:
+            raise serializers.ValidationError(self.message, code='missing_symbol')
+
 
     def validate(self,data):
         return data

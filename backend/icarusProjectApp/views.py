@@ -18,7 +18,6 @@ from icarusProjectApp.models import (
     Avion,
     Usuario,
     Reserva,
-    #Reserva_Vuelo,
 )
 
 from icarusProjectApp.serializers import (
@@ -199,9 +198,10 @@ def usuario_api_view(request):
         if usuario_serializer.is_valid():
             usuario_serializer.save()
 
-            return Response({'message':'Usuario creado correctamente'}, status = status.HTTP_201_CREATED)
+            return Response({"Return": 69,"Mensaje":'Usuario creado correctamente'}, status = status.HTTP_201_CREATED)
 
-        return Response(usuario_serializer.errors, status =status.HTTP_400_BAD_REQUEST)
+        return Response({"Return":70,"Mensaje": usuario_serializer.errors}, status =status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET', 'PUT','DELETE'])
 def usuario_detail_api_view(request,pk=None):
@@ -281,9 +281,10 @@ def reserva_api_view(request):
         if reserva_serializer.is_valid():
             reserva_serializer.save()
 
-            return Response({'message':'Reserva creada correctamente'}, status = status.HTTP_201_CREATED)
+            return Response({"Return": 69,"Mensaje":'Reserva creada correctamente'}, status = status.HTTP_201_CREATED)
 
-        return Response(reserva_serializer.errors, status =status.HTTP_400_BAD_REQUEST)
+        return Response({"Return":70,"Mensaje": reserva_serializer.errors}, status =status.HTTP_400_BAD_REQUEST)
+        
 
 
 
@@ -316,27 +317,3 @@ def reserva_detail_api_view(request,pk=None):
 
     return Response({'message':'no se ha encontrado una reserva con estos datos'}, status = status.HTTP_400_BAD_REQUEST)
 
-
-
-@api_view(['GET','POST'])
-def vuelo_reserva_api_view(request):
-
-    # list
-    if request.method == 'GET':
-
-        #queryset
-        reservas = Reserva.objects.all()
-        reservas_serializer = ReservaSerializer(reservas, many =True)
-        return Response(reservas_serializer.data, status = status.HTTP_200_OK)
-    
-    # create
-    elif request.method == 'POST':
-        reserva_serializer = ReservaSerializer(data=request.data)
-
-        # validacion
-        if reserva_serializer.is_valid():
-            reserva_serializer.save()
-
-            return Response({'message':'Reserva creada correctamente'}, status = status.HTTP_201_CREATED)
-
-        return Response(reserva_serializer.errors, status =status.HTTP_400_BAD_REQUEST)
