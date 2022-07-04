@@ -95,7 +95,7 @@ class Ciudad(models.Model):
     """
 
     id = models.AutoField(primary_key = True, unique = True)
-    nombre = models.CharField(max_length = 255)
+    nombre = models.CharField(max_length = 255, unique = True)
     pais = models.CharField(max_length = 255)
 
     class Meta:

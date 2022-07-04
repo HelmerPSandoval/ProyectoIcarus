@@ -1,23 +1,87 @@
 <script>
-    import { Alert, Label, Col, Container, Row, Styles, Icon, Input, Button, Form, FormGroup, Image, Card  } from 'sveltestrap';
+    import {Tooltip, Alert, Label, Col, Container, Row, Styles, Icon, Input, Button, Form, FormGroup, Image, Card, Modal, ModalBody, ModalHeader, ModalFooter  } from 'sveltestrap';
     import { Router, Link, Route } from "svelte-routing";
     import Home from './Home.svelte';
     import { navigate } from "svelte-routing";
-    import {usuario, mensaje} from "../utils/store";
+    import {usuario, mensaje_exito, mensaje_error} from "../utils/store";
     import { onMount } from "svelte";
 
 	let fecha_salida = ''
 	let hora_salida = ''
 	let fecha_llegada = ''
 	let hora_llegada = ''
+    let valor_vuelo;
 	let id_ciudad_origen = 0
 	let id_ciudad_destino = 0
 	let id_avion_asociado = 0
     let id = 0 //id de vuelo
     let vuelos = []
+    let error_ = false;
+
+    //Rellenar dropdowns de ciudades y avión
+    let ciudades = []
+    let aviones = []
+
+    //Formulario modal de ciudades
+    let nombre = ''
+    let pais = ''
+
+    //Formulario modal aviones
+    let modelo = ''
+    let capacidad = 50;
+
+    onMount(async () => {
+        const response = await fetch('http://127.0.0.1:8000/ciudades/');
+        const ciudades_json = await response.json();
+        
+        for(let i=0; i<ciudades_json.length;i++){
+            
+            ciudades[i] = ciudades_json[i]
+        }
+    })
+    onMount(async () => {
+        const response = await fetch('http://127.0.0.1:8000/aviones/');
+        const aviones_json = await response.json();
+        
+        for(let i=0; i<aviones_json.length;i++){
+            
+            aviones[i] = aviones_json[i]
+        }
+    })
+
+    function llenar_dropdown_ciudades () {
+        fetch('http://127.0.0.1:8000/ciudades/')
+        .then(response => response.json())
+        .then(data => {
+                for(let i=0; i<data.length;i++){
+                    
+                    ciudades[i] = data[i]
+                }
+        }).catch(error => {
+            console.log(error);
+            return [];
+        });
+    };
+
+    function llenar_dropdown_aviones () {
+        fetch('http://127.0.0.1:8000/aviones/')
+        .then(response => response.json())
+        .then(data => {
+                for(let i=0; i<data.length;i++){
+                    
+                    aviones[i] = data[i]
+                }
+        }).catch(error => {
+            console.log(error);
+            return [];
+        });
+    };
+
+    
+
     
     console.log("usuario:",$usuario);
-    console.log("mensaje:",$mensaje);
+    console.log("mensaje_exito:",$mensaje_exito);
     //llenar dropdown id de vuelo
     onMount(async () => {
         const response = await fetch('http://127.0.0.1:8000/vuelos');
@@ -41,6 +105,7 @@
             fecha_llegada = data.fecha_llegada;
             hora_llegada = data.hora_llegada;
             hora_salida = data.hora_salida;
+            valor_vuelo = data.valor_vuelo;
             id_ciudad_origen = data.id_ciudad_origen;
             id_ciudad_destino = data.id_ciudad_destino;
             id_avion_asociado = data.id_avion_asociado;
@@ -64,6 +129,7 @@
                     hora_salida,
                     fecha_llegada,
                     hora_llegada,
+                    valor_vuelo,
                     id_ciudad_origen,
                     id_ciudad_destino,
                     id_avion_asociado,
@@ -73,7 +139,7 @@
             result = JSON.stringify(datos);
             //console.log(datos)
 
-            $mensaje="Vuelo editado con éxito.";
+            $mensaje_exito="Vuelo editado con éxito.";
             
 
         } catch (error) {
@@ -81,22 +147,116 @@
         }
 	}
 
+    async function registrar_ciudad () {
+        try {
+            const res = await fetch('http://127.0.0.1:8000/ciudades/', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    nombre,
+                    pais,
+                })
+            })
+            const datos = await res.json()
+            result = JSON.stringify(datos);
+            console.log(result)
+            if(datos.Return == 69)
+            { 
+                $mensaje_exito = "Ciudad registrada con éxito.";
+                nombre = ''
+                pais = ''
+                llenar_dropdown_ciudades()
+            }else{
+                error_ = true;
+                
+            }
+
+        } catch (error) {
+            $mensaje_error = "Ha ocurrido un error durante el registro.";
+            nombre = ''
+            pais = ''
+        }
+        toggle();
+	}
+
+    async function registrar_avion () {
+        try {
+            const res = await fetch('http://127.0.0.1:8000/aviones/', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    modelo,
+                    capacidad,
+                })
+            })
+            const datos = await res.json()
+            result = JSON.stringify(datos);
+            console.log(result)
+            if(datos.Return == 69)
+            { 
+                
+                $mensaje_exito = "Avión registrado con éxito.";
+                modelo = ''
+                capacidad = 50
+                llenar_dropdown_aviones()
+            }else{
+                error_ = true;
+                
+
+            }
+
+        } catch (error) {
+            $mensaje_error = "Ha ocurrido un error durante el registro.";
+            modelo = ''
+            capacidad = 50
+        }
+        toggleSm();
+	}
+
     let home = () => {
-        $mensaje=null;
+        $mensaje_exito=null;
+        $mensaje_error=null;
         navigate("/home", {replace:true}); 
     }
     let ver_id_vuelo = () =>console.log(id);
 
-    
+    //logica de Modal Ciudad
+    let open = false;
+    const toggle = () => {
+        size = undefined;
+        open = !open;
+    };
+    //logica de Modal Avion
+    let size = 'sm';
+    let open_a = false;
+
+    const toggleSm = () => {
+        open_a = !open_a;
+    };
 </script>
 
 <Styles />
-<button type="button" class="h3 mt-3 fw-normal btn boton_icarus" on:click={home}><Icon name="house-door-fill" /></button>
+<div>
+    <button type="button" id="boton_home" class="h3 mt-3 fw-normal btn boton_icarus" on:click={home}><Icon name="house-door-fill" /></button>
+    <Tooltip target="boton_home" placement="right">Volver al inicio</Tooltip>
+</div>
 <h1>Editar vuelo</h1>
 <h4>Ingrese la información del vuelo</h4>
-{#if $mensaje != null} 
+{#if $mensaje_exito != null} 
     <div class="mt-1" style="margin-left: 400px; margin-right: 400px;">
-        <Alert color="info" dismissible>{$mensaje}</Alert>
+        <Alert style="text-align: center;" color="info" dismissible>{$mensaje_exito}</Alert>
+    </div>
+{/if}
+
+{#if $mensaje_error != null} 
+    <div class="mt-1" style="margin-left: 400px; margin-right: 400px;">
+        <Alert style="text-align: center;" color="danger" dismissible>{$mensaje_error}</Alert>
     </div>
 {/if}
 <main class="form-signin"> 
@@ -138,21 +298,104 @@
         </div>
 
         <div class="form-floating">
-            <FormGroup floating label="Id Ciudad Origen">
-                <Input class="h3 mb-3 fw-normal" bind:value={id_ciudad_origen} />
-            </FormGroup>
+            <div class="row d-flex justify-content-between">
+                <div class="col-9">
+                    <div>
+                        <FormGroup floating label="Ciudad Origen">
+                        <select class="form-select mb-3" aria-label="Default select example" bind:value={id_ciudad_origen}>
+                            {#each ciudades as ciudad}
+                            <option value="{ciudad.id}">[{ciudad.id}] - {ciudad.nombre}</option>                  
+                            {/each}
+                            
+                        </select>
+                        </FormGroup>
+                    </div>
+                </div>
+                <div class="col">
+                    <Modal isOpen={open} backdrop="static" {toggle}>
+                        <ModalHeader>Agregar Ciudad</ModalHeader>
+                        <ModalBody>
+                            <div>
+                                <FormGroup floating label="Nombre ciudad">
+                                    <Input class="h3 mb-3 fw-normal" type="text" bind:value={nombre}/>
+                                </FormGroup>
+                            </div>
+                            <div>
+                                <FormGroup floating label="País">
+                                    <Input class="h3 mb-3 fw-normal" type="text" bind:value={pais}/>
+                                </FormGroup>
+                            </div>
+                        </ModalBody>
+                        <ModalFooter>
+                            <button type="button" class="btn boton_login" on:click={registrar_ciudad}>Agregar</button>
+                            <button type="button" class="btn btn-secondary" on:click={toggle}>Cancelar</button>
+                        </ModalFooter>
+                    </Modal>
+                    <button type="button" class="btn boton_login mt-2 offset-md-2" on:click={toggle}><Icon name="plus" /></button>
+                </div>
+            </div>
         </div>  
         
         <div class="form-floating">
-            <FormGroup floating label="Id Ciudad Destino">
-                <Input class="h3 mb-3 fw-normal" bind:value={id_ciudad_destino} />
-            </FormGroup>
+            <div class="row d-flex justify-content-between">
+
+                <div class="col-9">
+                    <FormGroup floating label="Ciudad Destino">
+                        <select class="form-select mb-3" aria-label="Default select example" bind:value={id_ciudad_destino}>
+                            {#each ciudades as ciudad}
+                            <option value="{ciudad.id}">[{ciudad.id}] - {ciudad.nombre}</option>                  
+                            {/each}
+                        </select>
+                    </FormGroup>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn boton_login mt-2 offset-md-2" on:click={toggle}><Icon name="plus" /></button>
+                </div>
+            </div>
         </div>  
 
         <div>
-            <FormGroup floating label="Id Avión">
-                <Input class="h3 mb-3 fw-normal" bind:value={id_avion_asociado}/>
-            </FormGroup>
+            <div class="row d-flex justify-content-between">
+                <div class="col-9">
+                    <FormGroup floating label="Avión">
+                        <select class="form-select mb-3" aria-label="Default select example" bind:value={id_avion_asociado}>
+                            {#each aviones as avion}
+                            <option value="{avion.id}">[{avion.id}] - {avion.modelo}</option>                  
+                            {/each}  
+                        </select>                                
+                    </FormGroup>                
+                </div>
+
+                <div class="col">
+                    <Modal isOpen={open_a} backdrop="static" {toggle} {size}>
+                        <ModalHeader>Agregar Avión</ModalHeader>
+                        <ModalBody>
+                            <div>
+                                <FormGroup floating label="Modelo">
+                                    <Input class="h3 mb-3 fw-normal" type="text" bind:value={modelo}/>
+                                </FormGroup>
+                            </div>
+                            <div>
+                                <FormGroup floating label="Capacidad">
+                                    <Input class="h3 mb-3 fw-normal" type="number" min=1 bind:value={capacidad}/>
+                                </FormGroup>
+                            </div>
+                        </ModalBody>
+                        <ModalFooter>
+                            <button type="button" class="btn boton_login" on:click={registrar_avion}>Agregar</button>
+                            <button type="button" class="btn btn-secondary" on:click={toggleSm}>Cancelar</button>
+                        </ModalFooter>
+                      </Modal>
+                    <button type="button" class="btn boton_login mt-2 offset-md-2" on:click={toggleSm}><Icon name="plus" /></button>
+                </div>
+            </div> 
+
+            <div>
+                <FormGroup floating label="Precio vuelo">
+                    <Input class="h3 mb-3 fw-normal" type="number" bind:value={valor_vuelo}/>
+                </FormGroup>
+            </div>
+                   
         </div>
 
         <div>

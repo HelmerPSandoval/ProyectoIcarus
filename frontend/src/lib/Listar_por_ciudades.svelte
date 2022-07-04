@@ -1,9 +1,9 @@
 <script>
-    import { Alert, Table, Col, Container, Row, Styles, Icon, Input, Button, Form, FormGroup, Image, Card  } from 'sveltestrap';
+    import {Tooltip, Alert, Table, Col, Container, Row, Styles, Icon, Input, Button, Form, FormGroup, Image, Card  } from 'sveltestrap';
     import { Router, Link, Route } from "svelte-routing";
     import Home from './Home.svelte';
     import { navigate } from "svelte-routing";
-    import {usuario, mensaje} from "../utils/store";
+    import {usuario, mensaje_exito} from "../utils/store";
     import { onMount } from "svelte";
 
 	let fecha_salida = ''
@@ -20,7 +20,7 @@
     let numeros = [1, 2, 3, 4, 5, 6, 7, 8]
     
     //console.log("usuario:",$usuario);
-    //console.log("mensaje:",$mensaje);
+    //console.log("mensaje_exito:",$mensaje_exito);
 
     onMount(async () => {
         const response = await fetch('http://127.0.0.1:8000/vuelos/');
@@ -69,7 +69,7 @@
     }
 
     let home = () => {
-        $mensaje=null;
+        $mensaje_exito=null;
         navigate("/home", {replace:true}); 
     }
 
@@ -86,7 +86,10 @@
 </script>
 
 <Styles />
-<button type="button" class="h3 mt-3 fw-normal btn boton_icarus" on:click={home}><Icon name="house-door-fill" /></button>
+<div>
+    <button type="button" id="boton_home" class="h3 mt-3 fw-normal btn boton_icarus" on:click={home}><Icon name="house-door-fill" /></button>
+    <Tooltip target="boton_home" placement="right">Volver al inicio</Tooltip>
+</div>
 <h1>Vuelos Ordenados por Ciudad de Origen y Destino</h1>
 <h4>Seleccione una ciudad de origen y de destino</h4>
 
@@ -113,7 +116,8 @@
                 </FormGroup>
             </div>
             <div class="col-1">
-                <button type="button" class="btn boton_login mt-2" on:click={vaciar_tabla}><Icon name="arrow-counterclockwise" /></button>
+                <button type="button" id="boton_refrescar" class="btn boton_login mt-2" on:click={vaciar_tabla}><Icon name="arrow-counterclockwise" /></button>
+                <Tooltip target="boton_refrescar" placement="right">Refrescar registros</Tooltip>
             </div>
         </div>
         <div class="row mx-auto" style="width: 850px;">

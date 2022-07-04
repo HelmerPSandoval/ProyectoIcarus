@@ -137,7 +137,7 @@ class CiudadAPIView(APIView):
 
             data = {'error': str(serializer.errors)}
 
-        return Response(data = data)
+        return Response({"Return": 69,"Mensaje": "La ciudad ha sido creada correctamente."})
 
 class AvionAPIView(APIView):
 
@@ -157,12 +157,11 @@ class AvionAPIView(APIView):
             avion_nuevo = Avion.objects.create(**data_valida)
 
             data = AvionSerializer(avion_nuevo).data
-
         else:
 
             data = {'error': str(serializer.errors)}
 
-        return Response(data = data)
+        return Response({"Return": 69,"Mensaje": "El vuelo ha sido creado correctamente."})
 
 @api_view(['GET','POST'])
 def usuario_api_view(request):

@@ -40,6 +40,7 @@ class VueloCustomSerializer(serializers.Serializer):
     hora_salida = serializers.TimeField(required = True)
     fecha_llegada = serializers.DateField(required = True)
     hora_llegada = serializers.TimeField(required = True)
+    valor_vuelo = serializers.IntegerField(required = True)
     id_ciudad_origen = serializers.IntegerField(required = True)
     id_ciudad_destino = serializers.IntegerField(required = True)
     id_avion_asociado = serializers.IntegerField(required = True)
