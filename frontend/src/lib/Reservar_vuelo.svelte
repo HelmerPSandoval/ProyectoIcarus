@@ -3,16 +3,13 @@
     import { Router, Link, Route } from "svelte-routing";
     import Home from './Home.svelte';
     import { navigate } from "svelte-routing";
-    import {usuario, mensaje_exito} from "../utils/store";
+    import {usuario, mensaje_exito, mensaje_error} from "../utils/store";
     import { onMount } from "svelte";
 
-	let fecha_salida = ''
-	let hora_salida = ''
-	let fecha_llegada = ''
-	let hora_llegada = ''
+    let estado_app = 1
+    let rut_usuario = $usuario.rut
 	let id_ciudad_origen = 0
 	let id_ciudad_destino = 0
-	let id_avion_asociado = 0
     let id = 0 //id de vuelo
     let vuelos = []
     let ciudades = []
@@ -64,6 +61,37 @@
         
     }
 
+    async function realizar_reserva (vuelo_json) {
+        let vuelo = vuelo_json.id
+        let fecha_reserva = new Date().toISOString().slice(0,19)
+        fecha_reserva = fecha_reserva+"Z"
+        let valor_reserva = vuelo_json.valor_vuelo
+        try {
+            const res = await fetch(`http://127.0.0.1:8000/api/reserva/`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    fecha_reserva,
+                    valor_reserva,
+                    vuelo,
+                    rut_usuario,
+                })
+            })
+            const datos = await res.json()
+            //console.log(datos)
+
+            $mensaje_exito="Reserva realizada con éxito";
+            
+
+        } catch (error) {
+            $mensaje_error="Ha ocurrido un problema durante la reserva";
+        }
+        
+	}
+
     let home = () => {
         $mensaje_exito=null;
         navigate("/home", {replace:true}); 
@@ -84,9 +112,19 @@
     <button type="button" id="boton_home" class="h3 mt-3 fw-normal btn boton_icarus" on:click={home}><Icon name="house-door-fill" /></button>
     <Tooltip target="boton_home" placement="right">Volver al inicio</Tooltip>
 </div>
-<h1>Vuelos Ordenados por Ciudad de Origen y Destino</h1>
-<h4>Seleccione una ciudad de origen y de destino</h4>
+<h1>Realizar reserva</h1>
+<h4>Seleccione una ciudad de origen y de destino para desplegar vuelos disponibles</h4>
+{#if $mensaje_exito != null} 
+    <div class="mt-1" style="margin-left: 400px; margin-right: 400px;">
+        <Alert style="text-align: center;" color="info" dismissible>{$mensaje_exito}</Alert>
+    </div>
+{/if}
 
+{#if $mensaje_error != null} 
+    <div class="mt-1" style="margin-left: 400px; margin-right: 400px;">
+        <Alert style="text-align: center;" color="danger" dismissible>{$mensaje_error}</Alert>
+    </div>
+{/if}
 <main> 
     <br>
     <div class="row mx-auto mt-9 justify-content-between" style="width: 800px;">
@@ -125,6 +163,8 @@
                             <th>Fecha Salida</th>
                             <th>Ciudad Destino</th>
                             <th>Fecha Llegada</th>
+                            <th>Valor vuelo</th>
+                            <th>Reservar</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -136,6 +176,8 @@
                                     <td>{vuelo_tabla.fecha_salida} - {vuelo_tabla.hora_salida}</td>
                                     <td>{vuelo_tabla.nombre_ciudad_destino}</td>
                                     <td>{vuelo_tabla.fecha_llegada} - {vuelo_tabla.hora_llegada}</td>
+                                    <td>{vuelo_tabla.valor_vuelo}</td>
+                                    <td><button type="button" class="btn btn-success" on:click={() => realizar_reserva(vuelo_tabla)}><Icon name="cart-plus" /></button></td>
                                 </tr>
                             {/each}
                         

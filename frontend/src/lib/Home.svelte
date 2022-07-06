@@ -39,6 +39,12 @@
         navigate("/editar_vuelo", {replace:true});
     } 
 
+    let goto_res_vuelo = () =>
+    {
+        $mensaje_exito = null;        
+        $mensaje_error = null; 
+        navigate("/reservar_vuelo", {replace:true});
+    }
 
     let goto_listar_vuelos_c = () => 
     {
@@ -111,7 +117,7 @@
                                     {/if}
                                     
                                 {/if}
-                                <button class="list-group-item list-group-item-action">
+                                <button class="list-group-item list-group-item-action" on:click={goto_res_vuelo}>
                                     <div class="d-flex w-100 justify-content-left">
                                         <h5 class="mb-1">Reservar Vuelo <Icon name="plus-circle" /></h5>
                                     </div>
