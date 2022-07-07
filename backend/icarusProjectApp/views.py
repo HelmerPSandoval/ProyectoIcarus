@@ -11,6 +11,10 @@ from pickle import TRUE
 import re
 from urllib import response
 
+import pdfkit
+from json2table import convert
+from django.http import HttpResponse
+
 from icarusProjectApp.models import (
 
     Vuelo,
@@ -281,8 +285,21 @@ def reserva_api_view(request):
 
         # validacion
         if reserva_serializer.is_valid():
-            reserva_serializer.save()
 
+            reserva_serializer.save()     
+
+            input = reserva_serializer.data
+
+            build_direction = "LEFT_TO_RIGHT"
+
+            table_attributes = {"style" : "width:100%"}
+
+            json_to_html = convert(input, build_direction=build_direction, table_attributes=table_attributes)
+
+            config = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
+
+            pdfkit.from_string(json_to_html, "reserva.pdf", configuration=config)       
+           
             return Response({"Return": 69,"Mensaje":'Reserva creada correctamente'}, status = status.HTTP_201_CREATED)
 
         return Response({"Return":70,"Mensaje": reserva_serializer.errors}, status =status.HTTP_400_BAD_REQUEST)
@@ -367,3 +384,27 @@ class PagoListAPIView(APIView):
         pago.delete()
 
         return Response({"Return": 69,"Mensaje": "Se eliminó el pago correctamente."})
+
+class PDF(APIView):
+
+    def post (request):
+
+        reserva_serializer = ReservaSerializer(data=request.data)
+
+        input = reserva_serializer.data
+
+        build_direction = "LEFT_TO_RIGHT"
+
+        table_attributes = {"style" : "width:100%"}
+
+        json_to_html = convert(input, build_direction=build_direction, table_attributes=table_attributes)
+
+        config = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
+
+        pdf = pdfkit.from_string(json_to_html, configuration=config)
+
+        response = HttpResponse(pdf, content_type='application/pdf')
+
+        response['Content-Disposition'] = 'attachment; filename="reserva.pdf" '
+
+        return Response
