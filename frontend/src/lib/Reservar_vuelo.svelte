@@ -9,7 +9,7 @@
     let vuelo
     let fecha_reserva
     let valor_reserva
-    let estado_app = 1
+    let estado_app = 2
     let rut_usuario = $usuario.rut
 	let id_ciudad_origen = 0
 	let id_ciudad_destino = 0
@@ -112,8 +112,15 @@
     }
 
     //Estado 2
-    let tarjeta_credito
-    let numero_tarjeta
+    let tarjeta_credito;
+    let numero_tarjeta;
+    let numero_tarjeta_dinamico;
+    let update_numero_dinamico = () => {
+        
+        numero_tarjeta_dinamico = numero_tarjeta.slice(0, 4) + " " + numero_tarjeta.slice(4, 8) +" "+
+                                  numero_tarjeta.slice(8, 12) + " " + numero_tarjeta.slice(12, 16);
+        
+    }
     let mes_vencimiento
     let anio_vencimiento
     let fecha_vencimiento = mes_vencimiento+"/"+anio_vencimiento
@@ -206,46 +213,61 @@
     {:else if estado_app == 2}
     <h4>Ingrese los datos de su tarjeta de crédito</h4>
     <br>
-    <div class ="form-signin">
-        <Form>
-            <div>
-                <FormGroup floating label="Tarjeta de crédito">
-                    <Input class="h3 mb-3 fw-normal" bind:value={tarjeta_credito}/>
-                </FormGroup>
-            </div>
-        
-            <div>
-                <FormGroup floating label="Número de tarjeta">
-                    <Input class="h3 mb-3 fw-normal" bind:value={numero_tarjeta}/>
-                </FormGroup>
-            </div>
-            <div class="row">
-                
-                <div class="col">
-                    <FormGroup floating label="Mes de vencimiento">
-                        <Input class="h3 mb-3 fw-normal" bind:value={mes_vencimiento}/>
-                    </FormGroup>
-                </div>
-                
-                <div class="col">
-                    <FormGroup floating label="Año de vencimiento">
-                        <Input class="h3 mb-3 fw-normal" bind:value={anio_vencimiento}/>
-                    </FormGroup>
-                
-                </div>
-            </div>
-            <div>
-                <FormGroup floating label="CVC">
-                    <Input class="h3 mb-3 fw-normal" type="password" bind:value={cvc}/>
-                </FormGroup>
-            </div>
+    <div class="container">
+        <div class="row" style="justify-content:center;">
 
-            <div>
-                <div class="row">
-                    <button type="button" class="h3 mt-3 fw-normal btn boton_login" on:click={realizar_reserva}>Registrar Usuario</button>
+            <div class= "col-8 datos" >
+                <Form>
+                    <div>
+                        <FormGroup floating label="Tarjeta de crédito">
+                            <Input class="h3 mb-3 fw-normal" bind:value={tarjeta_credito}/>
+                        </FormGroup>
+                    </div>
+                
+                    <div>
+                        <FormGroup floating label="Número de tarjeta">
+                            <Input class="h3 mb-3 fw-normal" bind:value={numero_tarjeta} on:keyup={update_numero_dinamico}/>
+                        </FormGroup>
+                    </div>
+                    <div class="row">
+                        
+                        <div class="col">
+                            <FormGroup floating label="Mes de vencimiento">
+                                <Input class="h3 mb-3 fw-normal" bind:value={mes_vencimiento}/>
+                            </FormGroup>
+                        </div>
+                        
+                        <div class="col">
+                            <FormGroup floating label="Año de vencimiento">
+                                <Input class="h3 mb-3 fw-normal" bind:value={anio_vencimiento}/>
+                            </FormGroup>
+                        
+                        </div>
+                    </div>
+                    <div>
+                        <FormGroup floating label="CVC">
+                            <Input class="h3 mb-3 fw-normal" type="number" bind:value={cvc} />
+                        </FormGroup>
+                    </div>
+        
+                    <div>
+                        <div class="row">
+                            <button type="button" class="h3 mt-3 fw-normal btn boton_login" on:click={realizar_reserva}>Agregar Tarjeta</button>
+                        </div>
+                    </div>
+                </Form>
+            </div>
+            <div class="col-4 tc">
+                <div class="container-tc">
+                    <Image fluid alt="Icarus Airline" class="tc" src="images/tc_en_blanco.png" />
+                    {#if numero_tarjeta > 1}
+                    <div class="numeros">{numero_tarjeta_dinamico}</div>
+                    {/if}
+                    <div class="fecha">{mes_vencimiento}/{anio_vencimiento}</div>
+                    
                 </div>
             </div>
-        </Form>
+        </div>
     </div>
 
     {/if}
@@ -289,5 +311,40 @@
     .boton_login:hover {
     background-color: #0d68ba;
     color: white;
+    }
+
+    .tc {
+        height: 10px;
+        margin-left: 50px;
+        margin-top: 30px;
+    }
+
+    .datos{
+        max-width: 500px;
+        margin-left: 50px;
+        
+    }
+
+    .numeros{
+        
+        position: absolute;
+        bottom: 90px;
+        right: 100px;
+        color: white;
+        
+        font-family: "Monaco", monospace;
+        font-size: x-large;
+    }
+    .fecha{
+        position: absolute;
+        bottom: 55px;
+        right: 200px;
+        color: white;
+        
+        font-family: "Monaco", monospace;
+        font-size: large;
+    }
+    .container-tc{
+        position: relative;
     }
 </style>
