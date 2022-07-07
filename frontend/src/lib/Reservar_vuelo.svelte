@@ -6,6 +6,9 @@
     import {usuario, mensaje_exito, mensaje_error} from "../utils/store";
     import { onMount } from "svelte";
 
+    let vuelo
+    let fecha_reserva
+    let valor_reserva
     let estado_app = 1
     let rut_usuario = $usuario.rut
 	let id_ciudad_origen = 0
@@ -62,10 +65,6 @@
     }
 
     async function realizar_reserva (vuelo_json) {
-        let vuelo = vuelo_json.id
-        let fecha_reserva = new Date().toISOString().slice(0,19)
-        fecha_reserva = fecha_reserva+"Z"
-        let valor_reserva = vuelo_json.valor_vuelo
         try {
             const res = await fetch(`http://127.0.0.1:8000/api/reserva/`, {
                 method: 'POST',
@@ -91,6 +90,14 @@
         }
         
 	}
+    
+    async function goto_m_pago (vuelo_json) {
+        vuelo = vuelo_json.id
+        fecha_reserva = new Date().toISOString().slice(0,19)
+        fecha_reserva = fecha_reserva+"Z"
+        valor_reserva = vuelo_json.valor_vuelo
+        estado_app = 2
+	}
 
     let home = () => {
         $mensaje_exito=null;
@@ -104,7 +111,13 @@
 
     }
 
-    
+    //Estado 2
+    let tarjeta_credito
+    let numero_tarjeta
+    let mes_vencimiento
+    let anio_vencimiento
+    let fecha_vencimiento = mes_vencimiento+"/"+anio_vencimiento
+    let cvc
 </script>
 
 <Styles />
@@ -113,7 +126,6 @@
     <Tooltip target="boton_home" placement="right">Volver al inicio</Tooltip>
 </div>
 <h1>Realizar reserva</h1>
-<h4>Seleccione una ciudad de origen y de destino para desplegar vuelos disponibles</h4>
 {#if $mensaje_exito != null} 
     <div class="mt-1" style="margin-left: 400px; margin-right: 400px;">
         <Alert style="text-align: center;" color="info" dismissible>{$mensaje_exito}</Alert>
@@ -126,6 +138,8 @@
     </div>
 {/if}
 <main> 
+    {#if estado_app == 1}
+    <h4>Seleccione una ciudad de origen y de destino para desplegar vuelos disponibles</h4>
     <br>
     <div class="row mx-auto mt-9 justify-content-between" style="width: 800px;">
         <div class="row mx-auto justify-content-between" style="width: 850px;">
@@ -177,7 +191,7 @@
                                     <td>{vuelo_tabla.nombre_ciudad_destino}</td>
                                     <td>{vuelo_tabla.fecha_llegada} - {vuelo_tabla.hora_llegada}</td>
                                     <td>{vuelo_tabla.valor_vuelo}</td>
-                                    <td><button type="button" class="btn btn-success" on:click={() => realizar_reserva(vuelo_tabla)}><Icon name="cart-plus" /></button></td>
+                                    <td><button type="button" class="btn btn-success" on:click={() => goto_m_pago(vuelo_tabla)}><Icon name="cart-plus" /></button></td>
                                 </tr>
                             {/each}
                         
@@ -189,9 +203,61 @@
         
     </div>
 
+    {:else if estado_app == 2}
+    <h4>Ingrese los datos de su tarjeta de crédito</h4>
+    <br>
+    <div class ="form-signin">
+        <Form>
+            <div>
+                <FormGroup floating label="Tarjeta de crédito">
+                    <Input class="h3 mb-3 fw-normal" bind:value={tarjeta_credito}/>
+                </FormGroup>
+            </div>
+        
+            <div>
+                <FormGroup floating label="Número de tarjeta">
+                    <Input class="h3 mb-3 fw-normal" bind:value={numero_tarjeta}/>
+                </FormGroup>
+            </div>
+            <div class="row">
+                
+                <div class="col">
+                    <FormGroup floating label="Mes de vencimiento">
+                        <Input class="h3 mb-3 fw-normal" bind:value={mes_vencimiento}/>
+                    </FormGroup>
+                </div>
+                
+                <div class="col">
+                    <FormGroup floating label="Año de vencimiento">
+                        <Input class="h3 mb-3 fw-normal" bind:value={anio_vencimiento}/>
+                    </FormGroup>
+                
+                </div>
+            </div>
+            <div>
+                <FormGroup floating label="CVC">
+                    <Input class="h3 mb-3 fw-normal" type="password" bind:value={cvc}/>
+                </FormGroup>
+            </div>
 
+            <div>
+                <div class="row">
+                    <button type="button" class="h3 mt-3 fw-normal btn boton_login" on:click={realizar_reserva}>Registrar Usuario</button>
+                </div>
+            </div>
+        </Form>
+    </div>
+
+    {/if}
 </main>
 <style>
+
+    .form-signin {
+    width: 100%;
+    max-width: 460px;
+    padding: 15px;
+    margin: auto;
+    }
     
     .boton_icarus {
         background-color: #0b5394;

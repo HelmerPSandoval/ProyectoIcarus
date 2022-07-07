@@ -9,6 +9,7 @@
   import EditarVuelo from './lib/Editar_vuelo.svelte';
   import ListarPorCiudades from './lib/Listar_por_ciudades.svelte';
   import ReservarVuelo from './lib/Reservar_vuelo.svelte';
+  import CancelarReserva from './lib/Cancelar_reserva.svelte';
 </script>
 
 <main>
@@ -48,6 +49,10 @@
 
     <Route path="/reservar_vuelo">
       <ReservarVuelo></ReservarVuelo>
+    </Route>
+
+    <Route path="/mis_vuelos">
+      <CancelarReserva></CancelarReserva>
     </Route>
 
 	</Router>
