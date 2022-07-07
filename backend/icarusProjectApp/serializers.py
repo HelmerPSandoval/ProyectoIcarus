@@ -17,10 +17,17 @@ from icarusProjectApp.models import (
     Vuelo,
     Ciudad,
     Avion,
+    Pago,
     
 )
 
 #serializers que definen la representacion de la api
+
+class PagoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Pago
+        fields = '__all__'
 
 class AvionSerializer(serializers.ModelSerializer):
 

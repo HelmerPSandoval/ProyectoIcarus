@@ -18,6 +18,7 @@ from icarusProjectApp.models import (
     Avion,
     Usuario,
     Reserva,
+    Pago,
 )
 
 from icarusProjectApp.serializers import (
@@ -33,6 +34,7 @@ from icarusProjectApp.serializers import (
     UsuarioTokenSerializer,
     ReservaSerializer,
     ReservaCustomSerializer,
+    PagoSerializer,
 
 )
 
@@ -99,7 +101,7 @@ class VueloListAPIView(APIView):
 
                 serializer.save()            
 
-                return Response({"Success": "El vuelo ha sido editado correctamente."})
+                return Response({"Return": 69,"Mensaje": "El vuelo ha sido editado correctamente."})
 
             return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
         else:
@@ -111,7 +113,7 @@ class VueloListAPIView(APIView):
 
         vuelo.delete()
 
-        return Response({"Success": "se elimino el vuelo correctamente."})
+        return Response({"Return": 69,"Mensaje": "Se eliminó el vuelo correctamente."})
 
 
 class CiudadAPIView(APIView):
@@ -317,3 +319,51 @@ def reserva_detail_api_view(request,pk=None):
 
     return Response({"Return":70,"Mensaje":'No se ha encontrado una reserva con estos datos'}, status = status.HTTP_400_BAD_REQUEST)
 
+
+class PagoAPIView(APIView):
+
+    def get(self, request): 
+        
+        pagos = Pago.objects.all()
+        pagos_serializer = PagoSerializer(pagos, many = True)
+        return Response(pagos_serializer.data)
+
+    def post(self, request):
+
+        data = request.data
+
+        serializer = PagoSerializer(data = request.data)
+
+        if serializer.is_valid():                      
+
+            data_valida = serializer.validated_data
+
+            pago_nuevo = Pago.objects.create(**data_valida)
+        
+            data = PagoSerializer(pago_nuevo).data  
+
+            return Response({"Return": 69,"Mensaje": "El pago ha sido creado correctamente."})
+          
+        else:
+
+            data = {'error': str(serializer.errors)}
+
+        return Response(data = data)
+    
+
+class PagoListAPIView(APIView):
+
+    def get(self, request, pk):
+
+        pago= Pago.objects.get(id = pk)
+        pago_serializer = PagoSerializer(pago)
+
+        return Response(pago_serializer.data)
+
+    def delete(self, request, pk):
+
+        pago = Pago.objects.filter(id = pk)
+
+        pago.delete()
+
+        return Response({"Return": 69,"Mensaje": "Se eliminó el pago correctamente."})
