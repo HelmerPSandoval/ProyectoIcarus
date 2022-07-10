@@ -39,7 +39,6 @@ from icarusProjectApp.serializers import (
     CiudadCustomSerializer,
     AvionSerializer,
     AvionCustomSerializer,
-    TestUsuarioSerializer,
     UsuarioSerializer,
     UsuarioTokenSerializer,
     ReservaSerializer,
@@ -185,20 +184,7 @@ def usuario_api_view(request):
         usuarios = Usuario.objects.all()
         usuarios_serializer = UsuarioSerializer(usuarios, many =True)
 
-        test_data = {
-            'rut':'59978950',
-            'nombre':'chorizo',
-            'email':'test2@gmail.com',
-        }
-
-        test_usuario = TestUsuarioSerializer(data = test_data, context =test_data)
-        if test_usuario.is_valid():
-            print("paso validaciones")
-            #usuario_instance = test_usuario.save()
-            #print(usuario_instance)
-        else: 
-            print(test_usuario.errors)
-
+        
         return Response(usuarios_serializer.data, status = status.HTTP_200_OK)
     
     # create

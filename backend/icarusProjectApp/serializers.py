@@ -3,6 +3,9 @@ from wsgiref import validate
 from django.contrib.auth import password_validation, authenticate
 import re
 import email
+from django.core import exceptions
+import django.contrib.auth.password_validation as validators
+import sys
 #from platformdirs import user_cache_dir
 #Django REST Framework
 from rest_framework import serializers
@@ -109,6 +112,30 @@ class UsuarioSerializer(serializers.ModelSerializer):
         updated_usuario.set_password(validated_data['password'])
         updated_usuario.save()
         return updated_usuario
+    def validate(self, data):         
+         user = Usuario(**data)
+         
+         password = data.get('password')
+          
+         errors = []
+         try:
+            if re.search('[0-9]', password) is None:
+                errors.append('Error, debe tener al menos un numero')
+                     
+            if re.search('[A-Z]', password) is None:
+                errors.append('Error, debe tener al menos una MAYUSCULA')
+                
+            validators.validate_password(password=password, user=user)
+         
+        
+         except exceptions.ValidationError as e:
+            errors.append('Error, debe contener al menos 8 Caracteres')
+             
+         
+         if errors:
+             raise serializers.ValidationError(errors)
+          
+         return super(UsuarioSerializer, self).validate(data)
 
 class ReservaSerializer(serializers.ModelSerializer):
 
@@ -125,39 +152,3 @@ class ReservaCustomSerializer(serializers.Serializer):
 
 
     
-class TestUsuarioSerializer(serializers.Serializer):
-    rut = serializers.CharField()
-    nombre = serializers.CharField()
-    email =serializers.EmailField()
-
-    
-    def validate_username(self,value):
-        # validacion
-        if 'developer' in value:
-            raise serializers.ValidationError('Error, no puede existir un usuario con este nombre')
-        return value
-
-
-    def validate_email(self,value):
-        # validacion
-        if value =='':
-            raise serializers.ValidationError('tiene que indicar un correo')
-
-        if  self.validate_username(self.context['nombre']) in value:
-            raise serializers.ValidationError('El email no puede contener el nombre')
-
-        return value
-
-    def validate_password(self, value):
-        if re.search('[^A-Za-z0-9]', self.context['password']) is None:
-            raise serializers.ValidationError(self.message, code='missing_symbol')
-
-
-    def validate(self,data):
-        return data
-
-
-    """ def create(self, validated_data):
-        print(validated_data)
-        return Usuario.objects.create(**validated_data)
- """
