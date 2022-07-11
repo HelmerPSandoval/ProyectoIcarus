@@ -11,9 +11,10 @@ from rest_framework.decorators import api_view, action
 from pickle import TRUE
 import re
 from urllib import response
-
-import pdfkit
+import json
+#import pdfkit
 from json2table import convert
+from fpdf import FPDF
 from django.http import HttpResponse
 
 from http import server
@@ -260,6 +261,18 @@ class Logout(APIView):
         if token:
             user = token.user 
 
+class PDF(FPDF):
+    pass
+
+    def logo(self, name, x, y, w, h):
+        self.image(name, x, y, w, h)
+    
+    def titles(self, title):
+        self.set_xy(0.0,0.0)
+        self.set_font('Arial', 'B', 16)
+        self.cell(w=210.0, h=40.0, align='C', txt=title, border=0)
+    
+
 @api_view(['GET','POST'])
 def reserva_api_view(request):
 
@@ -285,16 +298,47 @@ def reserva_api_view(request):
             email_usuario = Usuario.objects.values_list('email', flat=True).get(rut=rut_usuario)
 
             input = reserva_serializer.data
+            id = json.dumps(input['id'])
+            fecha_reserva = json.dumps(input['fecha_reserva'])
+            fecha_reserva= re.sub('"','',fecha_reserva)
+            valor_reserva = json.dumps(input['valor_reserva'])
+            vuelo = json.dumps(input['vuelo'])
+            rut_usuario = json.dumps(input['rut_usuario'])
+            rut_usuario= re.sub('"','',rut_usuario)
 
-            build_direction = "LEFT_TO_RIGHT"
 
-            table_attributes = {"style" : "width:100%"}
 
-            json_to_html = convert(input, build_direction=build_direction, table_attributes=table_attributes)
-
-            config = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
-
-            pdfkit.from_string(json_to_html, "comprobante_de_reserva.pdf", configuration=config)                  
+            pdf = PDF()
+            pdf.add_page()
+            pdf.logo("IcarusAirline.png", 0, 0, 60, 15)
+            pdf.set_text_color(0,0,0)
+            pdf.titles("Comprobante de reserva")
+            pdf.ln()
+            pdf.cell(7,7,"Este es el comprobante generado luego de la reserva realizada en Icarus")
+            pdf.ln()
+            pdf.cell(7,7,"Airlines. A continuación, se muestran los datos referente a la reserva:")
+            pdf.ln()
+            pdf.ln()
+            pdf.cell(10,10,"- Rut del cliente: " + rut_usuario)
+            pdf.ln()
+            pdf.cell(10,10,"- Codigo de reserva: " + id)
+            pdf.ln()
+            pdf.cell(10,10,"- Fecha de reserva: " + fecha_reserva)
+            pdf.ln()
+            pdf.cell(10,10,"- Valor de la reserva: " + valor_reserva)
+            pdf.ln()
+            pdf.cell(10,10,"- Vuelo designado: " + vuelo)
+            for i in range(15):
+                pdf.ln()
+            pdf.set_text_color(255,0,0)
+            pdf.cell(7,7,"En caso de que tenga alguna inquietud o usted no haya realizado dicha ")
+            pdf.ln()
+            pdf.cell(7,7,"reserva, por favor contactarnos a través del siguiente correo electrónico:")
+            pdf.ln()
+            pdf.cell(7,7,"icarusairline.contact@gmail.com")
+            pdf.set_author("Icarus Airline S.A")
+            pdf.output("comprobante_de_reserva.pdf", "F")
+           
 
             msg = EmailMessage()
 
@@ -306,7 +350,8 @@ def reserva_api_view(request):
 
             msg.set_content("Comprobante de reserva")
 
-            filepath = os.path.join("C:\\Users\\almma\\Desktop\\ProyectoIcarus\\backend", "comprobante_de_reserva.pdf")
+            filepath = os.path.join("D:\\Desktop\Proyecto\\ProyectoIcarus\\backend","comprobante_de_reserva.pdf")
+            #filepath = os.path.join("C:\\Users\\miste\\Desktop\\correos icarus", "comprobante.pdf")
 
             with open(filepath, 'rb') as comprobante:
 
@@ -322,7 +367,7 @@ def reserva_api_view(request):
 
             server.send_message(msg)
 
-            server.quit() 
+            server.quit()  
            
             return Response({"Return": 69,"Mensaje":'Reserva creada correctamente'}, status = status.HTTP_201_CREATED)
 
