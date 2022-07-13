@@ -211,13 +211,9 @@ class Pago(models.Model):
     id = models.AutoField(primary_key = True, unique = True)
     tarjeta_credito = models.CharField(max_length = 255)
     numero_tarjeta = models.BigIntegerField()
-    fecha_vencimiento = models.DateField()
+    fecha_vencimiento = models.CharField(max_length = 255)
     cvc = models.IntegerField()
     rut_usuario = models.ForeignKey(
         Usuario, 
-        on_delete=models.CASCADE
-    )
-    id_reserva = models.ForeignKey(
-        Reserva,
         on_delete=models.CASCADE
     )

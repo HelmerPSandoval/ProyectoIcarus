@@ -350,7 +350,7 @@ def reserva_api_view(request):
 
             msg.set_content("Comprobante de reserva")
 
-            filepath = os.path.join("D:\\Desktop\Proyecto\\ProyectoIcarus\\backend","comprobante_de_reserva.pdf")
+            filepath = os.path.join("C:/Users/OMEN/Desktop/Universidad/ProyectoSoftware/ProyectoIcarus/backend" , "comprobante_de_reserva.pdf")
             #filepath = os.path.join("C:\\Users\\miste\\Desktop\\correos icarus", "comprobante.pdf")
 
             with open(filepath, 'rb') as comprobante:

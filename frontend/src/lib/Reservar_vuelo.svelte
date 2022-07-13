@@ -9,7 +9,7 @@
     let vuelo
     let fecha_reserva
     let valor_reserva
-    let estado_app = 2
+    let estado_app = 1
     let rut_usuario = $usuario.rut
 	let id_ciudad_origen = 0
 	let id_ciudad_destino = 0
@@ -80,7 +80,6 @@
                 })
             })
             const datos = await res.json()
-            //console.log(datos)
 
             $mensaje_exito="Reserva realizada con éxito";
             
@@ -115,16 +114,120 @@
     let tarjeta_credito;
     let numero_tarjeta;
     let numero_tarjeta_dinamico;
-    let update_numero_dinamico = () => {
-        
-        numero_tarjeta_dinamico = numero_tarjeta.slice(0, 4) + " " + numero_tarjeta.slice(4, 8) +" "+
-                                  numero_tarjeta.slice(8, 12) + " " + numero_tarjeta.slice(12, 16);
-        
-    }
     let mes_vencimiento
     let anio_vencimiento
     let fecha_vencimiento = mes_vencimiento+"/"+anio_vencimiento
     let cvc
+    //figura tarjeta de credito
+    let update_numero_dinamico = () => {
+        
+        numero_tarjeta_dinamico = numero_tarjeta.slice(0, 4) + " " + numero_tarjeta.slice(4, 8) +" "+
+                                  numero_tarjeta.slice(8, 12) + " " + numero_tarjeta.slice(12, 16);
+    }
+
+    let tc_usuario_json; //la tarjeta del usuario activo
+    let ya_tiene_pago = false; 
+    onMount(async () => {
+        const response = await fetch('http://127.0.0.1:8000/pagos/');
+        const pagos = await response.json();
+        
+        for (let tc = 0; tc < pagos.length; tc++) {
+            
+            if (pagos[tc].rut_usuario == $usuario.rut) {
+                tc_usuario_json = pagos[tc]
+                ya_tiene_pago = true; 
+
+                tarjeta_credito = tc_usuario_json.tarjeta_credito
+                numero_tarjeta = tc_usuario_json.numero_tarjeta
+                fecha_vencimiento = tc_usuario_json.fecha_vencimiento
+                cvc = tc_usuario_json.cvc
+
+                //cargar datos en imagen tarjeta de credito
+                let numero_tarjeta_str = numero_tarjeta.toString();
+                numero_tarjeta_dinamico = numero_tarjeta_str.slice(0, 4) + " " + numero_tarjeta_str.slice(4, 8) +" "+
+                numero_tarjeta_str.slice(8, 12) + " " + numero_tarjeta_str.slice(12, 16);
+                
+                mes_vencimiento = fecha_vencimiento.slice(0,2)
+                anio_vencimiento = fecha_vencimiento.slice(3,5)
+
+                break;
+            }     
+        }
+
+              
+        
+    })
+
+    let result;
+    
+    async function registrar_pago() {
+        try {
+            fecha_vencimiento = mes_vencimiento+"/"+anio_vencimiento
+
+            const res = await fetch('http://127.0.0.1:8000/pagos/', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    tarjeta_credito,
+                    numero_tarjeta,
+                    fecha_vencimiento,
+                    cvc,
+                    rut_usuario,
+                    
+                })
+            })
+            const datos = await res.json()
+            result = JSON.stringify(datos);
+            if(datos.Return == 69)
+            { 
+                
+                $mensaje_exito = "Pago registrado.";
+                ya_tiene_pago = true;
+                
+            }
+
+        } catch (error) {
+            $mensaje_error = "Ha ocurrido un error durante el registro.";
+            
+        }
+        
+	}
+
+    async function registrar_reserva() {
+        try {
+            const res = await fetch('http://127.0.0.1:8000/api/reserva/', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    fecha_reserva,
+                    valor_reserva,
+                    vuelo,
+                    rut_usuario,
+        
+                })
+            })
+            const datos = await res.json()
+            result = JSON.stringify(datos);
+            console.log(result);
+            if(datos.Return == 69)
+            { 
+                
+                $mensaje_exito = "Reserva registrada con éxito.";
+                estado_app = 1
+            }
+
+        } catch (error) {
+            $mensaje_error = "Ha ocurrido un error durante el registro.";
+            
+        }
+        
+	}
 </script>
 
 <Styles />
@@ -148,7 +251,7 @@
     {#if estado_app == 1}
     <h4>Seleccione una ciudad de origen y de destino para desplegar vuelos disponibles</h4>
     <br>
-    <div class="row mx-auto mt-9 justify-content-between" style="width: 800px;">
+    <div class="row mx-auto mt-9 justify-content-between" style="width: 1000px;">
         <div class="row mx-auto justify-content-between" style="width: 850px;">
             <div class="col-5">
                 <FormGroup floating label="Ciudad de Origen">
@@ -173,7 +276,7 @@
                 <Tooltip target="boton_refrescar" placement="right">Refrescar registros</Tooltip>
             </div>
         </div>
-        <div class="row mx-auto" style="width: 850px;">
+        <div class="row mx-auto" style="width: 1000px;">
             <div class="col">
                 {#if id_ciudad_origen != 0 && id_ciudad_destino != 0}
                     <Table hover bordered>
@@ -246,13 +349,17 @@
                     </div>
                     <div>
                         <FormGroup floating label="CVC">
-                            <Input class="h3 mb-3 fw-normal" type="number" bind:value={cvc} />
+                            <Input class="h3 mb-3 fw-normal" type="password" bind:value={cvc} />
                         </FormGroup>
                     </div>
         
                     <div>
                         <div class="row">
-                            <button type="button" class="h3 mt-3 fw-normal btn boton_login" on:click={realizar_reserva}>Agregar Tarjeta</button>
+                            {#if ya_tiene_pago == false} 
+                            <button type="button" class="h3 mt-3 fw-normal btn boton_login" on:click={registrar_pago}>Agregar Tarjeta</button>
+                            {:else if ya_tiene_pago == true}
+                            <button type="button" class="h3 mt-3 fw-normal btn btn-success" on:click={registrar_reserva}>Confirmar Reserva</button>
+                            {/if}
                         </div>
                     </div>
                 </Form>
@@ -260,9 +367,9 @@
             <div class="col-4 tc">
                 <div class="container-tc">
                     <Image fluid alt="Icarus Airline" class="tc" src="images/tc_en_blanco.png" />
-                    {#if numero_tarjeta > 1}
+                    
                     <div class="numeros">{numero_tarjeta_dinamico}</div>
-                    {/if}
+                    
                     <div class="fecha">{mes_vencimiento}/{anio_vencimiento}</div>
                     
                 </div>
