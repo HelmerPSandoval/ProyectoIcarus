@@ -176,7 +176,7 @@ class Reserva(models.Model):
     """
 
     id = models.AutoField(primary_key = True, unique = True)
-    fecha_reserva = models.DateTimeField()
+    fecha_reserva = models.CharField(max_length = 255)
     valor_reserva = models.IntegerField()
     vuelo = models.ForeignKey(
         Vuelo, 

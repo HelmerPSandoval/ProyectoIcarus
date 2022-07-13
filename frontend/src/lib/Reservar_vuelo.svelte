@@ -67,8 +67,7 @@
     
     async function goto_m_pago (vuelo_json) {
         vuelo = vuelo_json.id
-        fecha_reserva = new Date().toISOString().slice(0,19)
-        fecha_reserva = fecha_reserva+"Z"
+        fecha_reserva= new Date().toLocaleString()
         valor_reserva = vuelo_json.valor_vuelo
         estado_app = 2
 	}
