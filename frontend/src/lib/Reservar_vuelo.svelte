@@ -1,5 +1,5 @@
 <script>
-    import {Tooltip, Alert, Table, Col, Container, Row, Styles, Icon, Input, Button, Form, FormGroup, Image, Card  } from 'sveltestrap';
+    import {Spinner, Tooltip, Alert, Table, Col, Container, Row, Styles, Icon, Input, Button, Form, FormGroup, Image, Card  } from 'sveltestrap';
     import { Router, Link, Route } from "svelte-routing";
     import Home from './Home.svelte';
     import { navigate } from "svelte-routing";
@@ -18,6 +18,7 @@
     let ciudades = []
     let vuelos_tabla = []
 
+    let buffer = false;
     onMount(async () => {
         const response = await fetch('http://127.0.0.1:8000/vuelos/');
         const vuelos_json = await response.json();
@@ -63,32 +64,6 @@
         
         
     }
-
-    async function realizar_reserva (vuelo_json) {
-        try {
-            const res = await fetch(`http://127.0.0.1:8000/api/reserva/`, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    fecha_reserva,
-                    valor_reserva,
-                    vuelo,
-                    rut_usuario,
-                })
-            })
-            const datos = await res.json()
-
-            $mensaje_exito="Reserva realizada con éxito";
-            
-
-        } catch (error) {
-            $mensaje_error="Ha ocurrido un problema durante la reserva";
-        }
-        
-	}
     
     async function goto_m_pago (vuelo_json) {
         vuelo = vuelo_json.id
@@ -198,6 +173,7 @@
 
     async function registrar_reserva() {
         try {
+            buffer = true;
             const res = await fetch('http://127.0.0.1:8000/api/reserva/', {
                 method: 'POST',
                 headers: {
@@ -214,10 +190,9 @@
             })
             const datos = await res.json()
             result = JSON.stringify(datos);
-            console.log(result);
             if(datos.Return == 69)
             { 
-                
+                buffer = false;
                 $mensaje_exito = "Reserva registrada con éxito.";
                 estado_app = 1
             }
@@ -354,11 +329,15 @@
                     </div>
         
                     <div>
-                        <div class="row">
-                            {#if ya_tiene_pago == false} 
-                            <button type="button" class="h3 mt-3 fw-normal btn boton_login" on:click={registrar_pago}>Agregar Tarjeta</button>
-                            {:else if ya_tiene_pago == true}
-                            <button type="button" class="h3 mt-3 fw-normal btn btn-success" on:click={registrar_reserva}>Confirmar Reserva</button>
+                        <div class="row" style="justify-content: center;">
+                            {#if buffer == false} 
+                                {#if ya_tiene_pago == false}        
+                                <button type="button" class="h3 mt-3 fw-normal btn boton_login" on:click={registrar_pago}>Agregar Tarjeta</button>
+                                {:else if ya_tiene_pago == true}
+                                <button type="button" class="h3 mt-3 fw-normal btn btn-success" on:click={registrar_reserva}>Confirmar Reserva</button>     
+                                {/if}
+                            {:else if buffer == true}
+                            <Spinner color="success" />
                             {/if}
                         </div>
                     </div>
