@@ -3,12 +3,12 @@
     import { Router, Link, Route } from "svelte-routing";
     import Home from './Home.svelte';
     import { navigate } from "svelte-routing";
-    import {usuario, mensaje} from "../utils/store";
+    import {usuario, mensaje_exito,mensaje_error} from "../utils/store";
 
 	let username = 'mandarino@maderasrafa.cl'
 	let password = '123'
 	let result = null
-    console.log($mensaje)
+    console.log($mensaje_exito)
     let error_ = false;
 
     async function login () {
@@ -29,7 +29,7 @@
             if(datos.user.rol != null)
             {
                 $usuario = datos.user;
-                $mensaje=null;
+                $mensaje_exito=null;
                 navigate("/home", {replace:true});
             }else{
                 error_ = true;
@@ -46,9 +46,9 @@
 </script>
 
 <Image alt="Icarus Airline" src="images/IcarusAirline.png" />
-{#if $mensaje != null} 
+{#if $mensaje_exito != null} 
     <div style="margin-left: 400px; margin-right: 400px;">
-        <Alert color="info" dismissible>{$mensaje}</Alert>
+        <Alert color="info" dismissible>{$mensaje_exito}</Alert>
     </div>
 {/if}
 <main class="form-signin"> 

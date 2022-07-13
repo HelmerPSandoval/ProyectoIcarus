@@ -1,8 +1,11 @@
 #Django
 from wsgiref import validate
 from django.contrib.auth import password_validation, authenticate
-
+import re
 import email
+from django.core import exceptions
+import django.contrib.auth.password_validation as validators
+import sys
 #from platformdirs import user_cache_dir
 #Django REST Framework
 from rest_framework import serializers
@@ -10,16 +13,24 @@ from rest_framework.authtoken.models import Token
 
 
 #models
-from .models import Usuario, Reserva, Pago, Ciudad, Avion, Vuelo, Reserva_Vuelo
+from .models import Usuario, Reserva, Pago, Ciudad, Avion, Vuelo
 from icarusProjectApp.models import (
 
     Usuario,
     Vuelo,
     Ciudad,
     Avion,
+    Pago,
+    
 )
 
 #serializers que definen la representacion de la api
+
+class PagoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Pago
+        fields = '__all__'
 
 class AvionSerializer(serializers.ModelSerializer):
 
@@ -39,6 +50,7 @@ class VueloCustomSerializer(serializers.Serializer):
     hora_salida = serializers.TimeField(required = True)
     fecha_llegada = serializers.DateField(required = True)
     hora_llegada = serializers.TimeField(required = True)
+    valor_vuelo = serializers.IntegerField(required = True)
     id_ciudad_origen = serializers.IntegerField(required = True)
     id_ciudad_destino = serializers.IntegerField(required = True)
     id_avion_asociado = serializers.IntegerField(required = True)
@@ -100,37 +112,43 @@ class UsuarioSerializer(serializers.ModelSerializer):
         updated_usuario.set_password(validated_data['password'])
         updated_usuario.save()
         return updated_usuario
+    def validate(self, data):         
+         user = Usuario(**data)
+         
+         password = data.get('password')
+          
+         errors = []
+         try:
+            if re.search('[0-9]', password) is None:
+                errors.append('Error, debe tener al menos un numero')
+                     
+            if re.search('[A-Z]', password) is None:
+                errors.append('Error, debe tener al menos una MAYUSCULA')
+                
+            validators.validate_password(password=password, user=user)
+         
+        
+         except exceptions.ValidationError as e:
+            errors.append('Error, debe contener al menos 8 Caracteres')
+             
+         
+         if errors:
+             raise serializers.ValidationError(errors)
+          
+         return super(UsuarioSerializer, self).validate(data)
 
+class ReservaSerializer(serializers.ModelSerializer):
 
+    class Meta:
+        model = Reserva
+        fields = '__all__'
 
-class TestUsuarioSerializer(serializers.Serializer):
-    rut = serializers.CharField()
-    nombre = serializers.CharField()
-    email =serializers.EmailField()
+class ReservaCustomSerializer(serializers.Serializer):
+    
+    fecha_reserva = serializers.DateField(required = True)
+    valor_reserva = serializers.IntegerField(required = True)
+    vuelo = serializers.IntegerField(required = True)
+    rut_usuario = serializers.IntegerField(required = True)
+
 
     
-    def validate_username(self,value):
-        # validacion
-        if 'developer' in value:
-            raise serializers.ValidationError('Error, no puede existir un usuario con este nombre')
-        return value
-
-
-    def validate_email(self,value):
-        # validacion
-        if value =='':
-            raise serializers.ValidationError('tiene que indicar un correo')
-
-        if  self.validate_username(self.context['nombre']) in value:
-            raise serializers.ValidationError('El email no puede contener el nombre')
-
-        return value
-
-    def validate(self,data):
-        return data
-
-
-    """ def create(self, validated_data):
-        print(validated_data)
-        return Usuario.objects.create(**validated_data)
- """
