@@ -13,7 +13,6 @@ import re
 from urllib import response
 import json
 #import pdfkit
-from json2table import convert
 from fpdf import FPDF
 from django.http import HttpResponse
 

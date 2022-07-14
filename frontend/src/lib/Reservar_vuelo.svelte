@@ -358,15 +358,7 @@
     {/if}
 </main>
 <style>
-
-    .form-signin {
-    width: 100%;
-    max-width: 460px;
-    padding: 15px;
-    margin: auto;
-    }
-    
-    .boton_icarus {
+        .boton_icarus {
         background-color: #0b5394;
         color: white;
         position :fixed;

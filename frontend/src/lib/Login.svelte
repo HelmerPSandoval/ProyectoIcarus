@@ -5,11 +5,9 @@
     import { navigate } from "svelte-routing";
     import {usuario, mensaje_exito,mensaje_error} from "../utils/store";
 
-	let username = 'mandarino@maderasrafa.cl'
-	let password = '123'
-	let result = null
+	let username;
+	let password;
     console.log($mensaje_exito)
-    let error_ = false;
 
     async function login () {
         try {
@@ -25,14 +23,11 @@
                 })
             })
             const datos = await res.json()
-            result = JSON.stringify(datos);
             if(datos.user.rol != null)
             {
                 $usuario = datos.user;
                 $mensaje_exito=null;
                 navigate("/home", {replace:true});
-            }else{
-                error_ = true;
             }
         } catch (error) {
             

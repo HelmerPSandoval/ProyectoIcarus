@@ -5,10 +5,6 @@
     import { writable } from "svelte/store";
     import { onMount } from 'svelte';
 
-
-    console.log("usuario:",$usuario);
-    console.log("mensaje_exito:",$mensaje_exito);
-
     onMount(async () => {
 		
         if ($usuario == null){
