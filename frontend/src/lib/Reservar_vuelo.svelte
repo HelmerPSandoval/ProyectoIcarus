@@ -3,7 +3,7 @@
     import { Router, Link, Route } from "svelte-routing";
     import Home from './Home.svelte';
     import { navigate } from "svelte-routing";
-    import {usuario, mensaje_exito, mensaje_error} from "../utils/store";
+    import {usuario, mensajeExito, mensajeError} from "../utils/store";
     import { onMount } from "svelte";
 
     let vuelo
@@ -73,7 +73,7 @@
 	}
 
     let home = () => {
-        $mensaje_exito=null;
+        $mensajeExito=null;
         navigate("/home", {replace:true}); 
     }
 
@@ -158,13 +158,13 @@
             if(datos.Return == 69)
             { 
                 
-                $mensaje_exito = "Pago registrado.";
+                $mensajeExito = "Pago registrado.";
                 ya_tiene_pago = true;
                 
             }
 
         } catch (error) {
-            $mensaje_error = "Ha ocurrido un error durante el registro.";
+            $mensajeError = "Ha ocurrido un error durante el registro.";
             
         }
         
@@ -192,12 +192,12 @@
             if(datos.Return == 69)
             { 
                 buffer = false;
-                $mensaje_exito = "Reserva registrada con éxito.";
+                $mensajeExito = "Reserva registrada con éxito.";
                 estado_app = 1
             }
 
         } catch (error) {
-            $mensaje_error = "Ha ocurrido un error durante el registro.";
+            $mensajeError = "Ha ocurrido un error durante el registro.";
             
         }
         
@@ -210,15 +210,15 @@
     <Tooltip target="boton_home" placement="right">Volver al inicio</Tooltip>
 </div>
 <h1>Realizar reserva</h1>
-{#if $mensaje_exito != null} 
+{#if $mensajeExito != null} 
     <div class="mt-1" style="margin-left: 400px; margin-right: 400px;">
-        <Alert style="text-align: center;" color="info" dismissible>{$mensaje_exito}</Alert>
+        <Alert style="text-align: center;" color="info" dismissible>{$mensajeExito}</Alert>
     </div>
 {/if}
 
-{#if $mensaje_error != null} 
+{#if $mensajeError != null} 
     <div class="mt-1" style="margin-left: 400px; margin-right: 400px;">
-        <Alert style="text-align: center;" color="danger" dismissible>{$mensaje_error}</Alert>
+        <Alert style="text-align: center;" color="danger" dismissible>{$mensajeError}</Alert>
     </div>
 {/if}
 <main> 

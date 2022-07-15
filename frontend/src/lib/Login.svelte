@@ -3,11 +3,11 @@
     import { Router, Link, Route } from "svelte-routing";
     import Home from './Home.svelte';
     import { navigate } from "svelte-routing";
-    import {usuario, mensaje_exito,mensaje_error} from "../utils/store";
+    import {usuario, mensajeExito,mensajeError} from "../utils/store";
 
 	let username;
 	let password;
-    console.log($mensaje_exito)
+    console.log($mensajeExito)
 
     async function login () {
         try {
@@ -26,7 +26,7 @@
             if(datos.user.rol != null)
             {
                 $usuario = datos.user;
-                $mensaje_exito=null;
+                $mensajeExito=null;
                 navigate("/home", {replace:true});
             }
         } catch (error) {
@@ -41,9 +41,9 @@
 </script>
 
 <Image alt="Icarus Airline" src="images/IcarusAirline.png" />
-{#if $mensaje_exito != null} 
+{#if $mensajeExito != null} 
     <div style="margin-left: 400px; margin-right: 400px;">
-        <Alert color="info" dismissible>{$mensaje_exito}</Alert>
+        <Alert color="info" dismissible>{$mensajeExito}</Alert>
     </div>
 {/if}
 <main class="form-signin"> 
@@ -58,7 +58,6 @@
         <div>
             <FormGroup floating label="Contraseña">
                 <Input class="h3 mb-3 fw-normal" type="password" bind:value={password}/>
-                <a href="/reset_password"> ¿olvidó su contraseña?</a>
             </FormGroup>
         </div>
         
