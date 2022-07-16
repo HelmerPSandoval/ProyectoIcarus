@@ -1,4 +1,3 @@
-# DJANGO REST framework
 from turtle import pd
 from rest_framework.response import Response
 from rest_framework import serializers
@@ -12,7 +11,6 @@ from pickle import TRUE
 import re
 from urllib import response
 import json
-#import pdfkit
 from fpdf import FPDF
 from django.http import HttpResponse
 
@@ -49,13 +47,32 @@ from icarusProjectApp.serializers import (
 
 class VueloAPIView(APIView):
 
+    """
+    View para la clase Vuelo que retorna todos los vuelos existentes en el sistema o crea uno.
+
+    * Requiere autenticación.
+
+    """
+
     def get(self, request): 
+
+        """
+        Retorna una lista de todos los vuelos existentes.
+
+        """
         
         vuelos = Vuelo.objects.all()
         vuelos_serializer = VueloSerializer(vuelos, many = True)
         return Response(vuelos_serializer.data)
 
     def post(self, request):
+
+        """
+        Crea un vuelo.
+
+        * Solo los usuarios del tipo administrador pueden acceder a esta view.
+        
+        """
 
         data = request.data
 
@@ -89,7 +106,19 @@ class VueloAPIView(APIView):
 
 class VueloListAPIView(APIView):
 
+    """
+    View para la clase Vuelo que puede retornar un vuelo en específico, editarlo o eliminarlo.
+
+    * Requiere autenticación.
+
+    """
+
     def get(self, request, pk):
+
+        """
+        Retorna un vuelo en específico.
+        
+        """
 
         vuelo= Vuelo.objects.get(id = pk)
         vuelo_serializer = VueloSerializer(vuelo)
@@ -97,6 +126,13 @@ class VueloListAPIView(APIView):
         return Response(vuelo_serializer.data)
 
     def put(self, request, pk):
+
+        """
+        Edita un vuelo en específico.
+
+        * Solo los usuarios del tipo administrador pueden acceder a esta view.
+        
+        """
 
         vuelo = Vuelo.objects.get(id = pk)
 
@@ -118,6 +154,13 @@ class VueloListAPIView(APIView):
 
     def delete(self, request, pk):
 
+        """
+        Borra un vuelo en específico.
+
+        * Solo los usuarios del tipo administrador pueden acceder a esta view.
+        
+        """
+
         vuelo = Vuelo.objects.filter(id = pk)
 
         vuelo.delete()
@@ -127,13 +170,32 @@ class VueloListAPIView(APIView):
 
 class CiudadAPIView(APIView):
 
+    """
+    View para la clase Ciudad que puede retornar todas las ciudades existentes en el sistema o crea una.
+
+    * Requiere autenticación.
+
+    """
+
     def get(self, request):
+
+        """
+        Retorna todas las ciudades existentes.
+        
+        """
 
         ciudades = Ciudad.objects.all()
         ciudades_serializer = CiudadSerializer(ciudades, many = True)
         return Response(ciudades_serializer.data)
 
     def post(self, request):
+
+        """
+        Crea una ciudad.
+
+        * Solo los usuarios del tipo administrador pueden acceder a esta view.
+        
+        """
 
         serializer = CiudadCustomSerializer(data = request.data)
 
@@ -150,15 +212,35 @@ class CiudadAPIView(APIView):
 
         return Response({"Return": 69,"Mensaje": "La ciudad ha sido creada correctamente."})
 
+
 class AvionAPIView(APIView):
 
+    """
+    View para la clase Avion que retorna todos los aviones existentes en el sistema o crea uno.
+
+    * Requiere autenticación.
+
+    """
+
     def get(self, request):
+
+        """
+        Retorna todos los aviones existentes.
+        
+        """
 
         aviones = Avion.objects.all()
         aviones_serializer = AvionSerializer(aviones, many = True)
         return Response(aviones_serializer.data)
 
     def post(self, request):
+
+        """
+        Crea un avión.
+
+        * Solo los usuarios del tipo administrador pueden acceder a esta view.
+        
+        """
 
         serializer = AvionCustomSerializer(data = request.data)
 
@@ -177,21 +259,17 @@ class AvionAPIView(APIView):
 @api_view(['GET','POST'])
 def usuario_api_view(request):
 
-    # list
     if request.method == 'GET':
 
-        #queryset
         usuarios = Usuario.objects.all()
         usuarios_serializer = UsuarioSerializer(usuarios, many =True)
 
         
         return Response(usuarios_serializer.data, status = status.HTTP_200_OK)
     
-    # create
     elif request.method == 'POST':
         usuario_serializer = UsuarioSerializer(data=request.data)
 
-        # validacion
         if usuario_serializer.is_valid():
             usuario_serializer.save()
 
@@ -203,18 +281,14 @@ def usuario_api_view(request):
 @api_view(['GET', 'PUT','DELETE'])
 def usuario_detail_api_view(request,pk=None):
 
-    # consulta
     usuario = Usuario.objects.filter(rut=pk).first()
 
-    # validacion
     if usuario:
 
-        # retrieve
         if request.method == 'GET':            
             usuario_serializer = UsuarioSerializer(usuario)
             return Response(usuario_serializer.data, status = status.HTTP_200_OK)
 
-        #actualizar
         elif request.method == 'PUT':           
             usuario_serializer =UsuarioSerializer(usuario, data =request.data)
             if usuario_serializer.is_valid():
@@ -222,7 +296,6 @@ def usuario_detail_api_view(request,pk=None):
                 return Response({"Return": 69,"Mensaje":'Usuario modificado correctamente.'}, status = status.HTTP_200_OK)
             return Response({"Return":70,"Mensaje": usuario_serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
  
-        # eliminar
         elif request.method == 'DELETE':            
             usuario.delete()
             return Response({"Return":69,"Mensaje": 'Usuario eliminado correctamente!'}, status = status.HTTP_200_OK)
@@ -275,19 +348,15 @@ class PDF(FPDF):
 @api_view(['GET','POST'])
 def reserva_api_view(request):
 
-    # list
     if request.method == 'GET':
 
-        #queryset
         reservas = Reserva.objects.all()
         reservas_serializer = ReservaSerializer(reservas, many =True)
         return Response(reservas_serializer.data, status = status.HTTP_200_OK)
     
-    # create
     elif request.method == 'POST':
         reserva_serializer = ReservaSerializer(data=request.data)
 
-        # validacion
         if reserva_serializer.is_valid():
 
             reserva_serializer.save()   
@@ -377,18 +446,14 @@ def reserva_api_view(request):
 @api_view(['GET', 'PUT','DELETE'])
 def reserva_detail_api_view(request,pk=None):
 
-    # consulta
     reserva = Reserva.objects.filter(id=pk).first()
 
-    # validacion
     if reserva:
 
-        # retrieve
         if request.method == 'GET':            
             reserva_serializer = ReservaSerializer(reserva)
             return Response(reserva_serializer.data, status = status.HTTP_200_OK)
 
-        #actualizar
         elif request.method == 'PUT':           
             reserva_serializer =ReservaSerializer(reserva, data =request.data)
             if reserva_serializer.is_valid():
@@ -396,7 +461,6 @@ def reserva_detail_api_view(request,pk=None):
                 return Response({"Return": 69,"Mensaje":'Reserva modificada correctamente.'}, status = status.HTTP_200_OK)
             return Response({"Return":70,"Mensaje": reserva_serializer.errors}, status =status.HTTP_400_BAD_REQUEST)
  
-        # eliminar
         elif request.method == 'DELETE':            
             reserva.delete()
             return Response({"Return": 69,"Mensaje":'Reserva eliminada correctamente!'}, status = status.HTTP_200_OK)
@@ -406,13 +470,30 @@ def reserva_detail_api_view(request,pk=None):
 
 class PagoAPIView(APIView):
 
+    """
+    View para la clase Pago que retorna todos los pagos hechos o realiza uno.
+    
+    * Requiere autenticación.
+
+    """
+
     def get(self, request): 
+
+        """
+        Retorna todos los pagos realizados.
+        
+        """
         
         pagos = Pago.objects.all()
         pagos_serializer = PagoSerializer(pagos, many = True)
         return Response(pagos_serializer.data)
 
     def post(self, request):
+
+        """
+        Efectúa un pago.
+        
+        """
 
         data = request.data
 
@@ -437,7 +518,19 @@ class PagoAPIView(APIView):
 
 class PagoListAPIView(APIView):
 
+    """
+    View para la clase Pago que retorna un pago en específico o  lo elimina.
+    
+    * Requiere autenticación.
+
+    """
+
     def get(self, request, pk):
+
+        """
+        Retorna el pago en específico.
+
+        """
 
         pago= Pago.objects.get(id = pk)
         pago_serializer = PagoSerializer(pago)
@@ -445,6 +538,11 @@ class PagoListAPIView(APIView):
         return Response(pago_serializer.data)
 
     def delete(self, request, pk):
+
+        """
+        Elimina el pago en específico.
+
+        """
 
         pago = Pago.objects.filter(id = pk)
 
