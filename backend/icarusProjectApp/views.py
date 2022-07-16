@@ -259,52 +259,62 @@ class AvionAPIView(APIView):
 @api_view(['GET','POST'])
 def usuario_api_view(request):
 
-    if request.method == 'GET':
+    """
+    View para la clase Usuario que retorna todos los usuarios existentes en el sistema o crea uno.
 
-        usuarios = Usuario.objects.all()
-        usuarios_serializer = UsuarioSerializer(usuarios, many =True)
+    Metodo 'GET': Retorna una lista de todos los usuarios existentes.
+    Metodo 'POST': Crear un usuario. 
 
-        
-        return Response(usuarios_serializer.data, status = status.HTTP_200_OK)
+    """
     
+    if request.method == 'GET':
+        usuarios = Usuario.objects.all()
+        usuarios_serializer = UsuarioSerializer(usuarios, many =True)        
+        return Response(usuarios_serializer.data, status = status.HTTP_200_OK)    
     elif request.method == 'POST':
         usuario_serializer = UsuarioSerializer(data=request.data)
-
         if usuario_serializer.is_valid():
             usuario_serializer.save()
-
             return Response({"Return": 69,"Mensaje":'Usuario creado correctamente'}, status = status.HTTP_201_CREATED)
-
         return Response({"Return":70,"Mensaje": usuario_serializer.errors}, status =status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'PUT','DELETE'])
 def usuario_detail_api_view(request,pk=None):
 
+    """
+    View para la clase usuario que puede retornar un usuario en específico, editarlo o eliminarlo.
+
+    Metodo 'GET': Retorna un usuario en específico.
+    Metodo 'PUT': Edita un usuario en específico.
+    Metodo 'DELETE': Borra un usuario en específico.
+
+    """
+
     usuario = Usuario.objects.filter(rut=pk).first()
-
     if usuario:
-
         if request.method == 'GET':            
             usuario_serializer = UsuarioSerializer(usuario)
             return Response(usuario_serializer.data, status = status.HTTP_200_OK)
-
         elif request.method == 'PUT':           
             usuario_serializer =UsuarioSerializer(usuario, data =request.data)
             if usuario_serializer.is_valid():
                 usuario_serializer.save()
                 return Response({"Return": 69,"Mensaje":'Usuario modificado correctamente.'}, status = status.HTTP_200_OK)
-            return Response({"Return":70,"Mensaje": usuario_serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
- 
+            return Response({"Return":70,"Mensaje": usuario_serializer.errors}, status = status.HTTP_400_BAD_REQUEST) 
         elif request.method == 'DELETE':            
             usuario.delete()
             return Response({"Return":69,"Mensaje": 'Usuario eliminado correctamente!'}, status = status.HTTP_200_OK)
-
     return Response({"Return":70,"Mensaje":'No se ha encontrado un usuario con estos datos'}, status = status.HTTP_400_BAD_REQUEST)
     
-
-
 class Login(ObtainAuthToken):
+
+    """
+    View para iniciar sesión.
+
+    * Todos los usuarios pueden acceder a esta view.
+
+    """
 
     def post(self,request,*args,**kwargs):
         login_serializer = self.serializer_class(data = request.data, context = {'request' :request})
@@ -347,6 +357,16 @@ class PDF(FPDF):
 
 @api_view(['GET','POST'])
 def reserva_api_view(request):
+
+    """
+    View para la clase reserva que retorna todas las reservas existentes en el sistema o crea uno.
+
+    Metodo 'GET': Retorna una lista de todos las reservas existentes.
+    Metodo 'PUT': Crear una reserva. 
+
+    * Al crear una reserva se genera un comprobante en pdf.
+
+    """
 
     if request.method == 'GET':
 
@@ -437,7 +457,6 @@ def reserva_api_view(request):
             server.quit()  
            
             return Response({"Return": 69,"Mensaje":'Reserva creada correctamente'}, status = status.HTTP_201_CREATED)
-
         return Response({"Return":70,"Mensaje": reserva_serializer.errors}, status =status.HTTP_400_BAD_REQUEST)
         
 
@@ -446,25 +465,29 @@ def reserva_api_view(request):
 @api_view(['GET', 'PUT','DELETE'])
 def reserva_detail_api_view(request,pk=None):
 
+    """
+    View para la clase reserva que puede retornar una reserva en específico, editarla o eliminarla.
+
+    Metodo 'GET': Retorna una reserva en específico.
+    Metodo 'PUT': Edita una reserva en específico.
+    Metodo 'DELETE': Borra una reserva en específico.
+
+    """
+
     reserva = Reserva.objects.filter(id=pk).first()
-
     if reserva:
-
         if request.method == 'GET':            
             reserva_serializer = ReservaSerializer(reserva)
             return Response(reserva_serializer.data, status = status.HTTP_200_OK)
-
         elif request.method == 'PUT':           
             reserva_serializer =ReservaSerializer(reserva, data =request.data)
             if reserva_serializer.is_valid():
                 reserva_serializer.save()
                 return Response({"Return": 69,"Mensaje":'Reserva modificada correctamente.'}, status = status.HTTP_200_OK)
-            return Response({"Return":70,"Mensaje": reserva_serializer.errors}, status =status.HTTP_400_BAD_REQUEST)
- 
+            return Response({"Return":70,"Mensaje": reserva_serializer.errors}, status =status.HTTP_400_BAD_REQUEST) 
         elif request.method == 'DELETE':            
             reserva.delete()
             return Response({"Return": 69,"Mensaje":'Reserva eliminada correctamente!'}, status = status.HTTP_200_OK)
-
     return Response({"Return":70,"Mensaje":'No se ha encontrado una reserva con estos datos'}, status = status.HTTP_400_BAD_REQUEST)
 
 

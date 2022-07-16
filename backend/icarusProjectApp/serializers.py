@@ -140,11 +140,21 @@ class AvionCustomSerializer(serializers.Serializer):
     capacidad = serializers.IntegerField(required = True)
 
 class UsuarioTokenSerializer(serializers.ModelSerializer):
+
+    """
+    Serializer del modelo Usuario que considera campos en específico.
+    
+    """
     class Meta:
         model = Usuario
         fields = ('rut','email','nombre','rol')
 
 class UsuarioSerializer(serializers.ModelSerializer):
+
+    """
+    Serializer del modelo Usuario.
+    
+    """
     class Meta:
         model =Usuario
         fields = '__all__'
