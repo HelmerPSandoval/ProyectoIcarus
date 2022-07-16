@@ -1,4 +1,3 @@
-#Django
 from wsgiref import validate
 from django.contrib.auth import password_validation, authenticate
 import re
@@ -6,13 +5,10 @@ import email
 from django.core import exceptions
 import django.contrib.auth.password_validation as validators
 import sys
-#from platformdirs import user_cache_dir
-#Django REST Framework
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
 
-#models
 from .models import Usuario, Reserva, Pago, Ciudad, Avion, Vuelo
 from icarusProjectApp.models import (
 
@@ -24,9 +20,13 @@ from icarusProjectApp.models import (
     
 )
 
-#serializers que definen la representacion de la api
 
 class PagoSerializer(serializers.ModelSerializer):
+
+    """
+    Serializer del modelo Pago.
+
+    """
 
     class Meta:
         model = Pago
@@ -34,17 +34,32 @@ class PagoSerializer(serializers.ModelSerializer):
 
 class AvionSerializer(serializers.ModelSerializer):
 
+    """
+    Serializer del modelo Avion.
+    
+    """
+
     class Meta:
         model = Avion
         fields = '__all__'
 
 class VueloSerializer(serializers.ModelSerializer):
+
+    """
+    Serializer del modelo Vuelo.
     
-     class Meta:
+    """
+    
+    class Meta:
         model = Vuelo
         fields = '__all__'
 
 class VueloCustomSerializer(serializers.Serializer):
+
+    """
+    Serializer del modelo Vuelo que considera campos en específico.
+    
+    """
 
     fecha_salida = serializers.DateField(required = True)
     hora_salida = serializers.TimeField(required = True)
@@ -57,6 +72,11 @@ class VueloCustomSerializer(serializers.Serializer):
 
     def validando_vuelo(data):
 
+        """
+        Revisa que el vuelo que esté siendo creado no esté registrado previamente.
+    
+        """
+
         if Vuelo.objects.filter(fecha_salida = data['fecha_salida'], hora_salida = data['hora_salida'], fecha_llegada = data['fecha_llegada'], hora_llegada = data['hora_llegada'],  id_ciudad_origen = data['id_ciudad_origen'], id_ciudad_destino = data['id_ciudad_destino'], id_avion_asociado = data['id_avion_asociado']).exists():
             raise serializers.ValidationError({'numero': '1', 'mensaje': 'Este vuelo ya ha sido registrado. Intente nuevamente.'})
         else:
@@ -64,12 +84,23 @@ class VueloCustomSerializer(serializers.Serializer):
 
     def validando_ciudad(data):
 
+        """
+        Revisa que las ciudades ingresadas no sean las mismas.
+    
+        """
+
         if (data['id_ciudad_origen'] == data['id_ciudad_destino']):
             raise serializers.ValidationError({'numero': '2', 'mensaje': 'No se puede tener la misma ciudad de origen como destino. Intente nuevamente.'})
         else:
             return True
 
     def validando_avion_asociado(data):
+
+        """
+        Revisa que el avión que se esté registrando en un vuelo no esté programado para esa fecha y hora.
+    
+        """
+
         if Vuelo.objects.filter(fecha_salida = data['fecha_salida'], hora_salida = data['hora_salida'], fecha_llegada = data['fecha_llegada'], hora_llegada = data['hora_llegada'], id_avion_asociado=data['id_avion_asociado']).exists():
             raise serializers.ValidationError({'numero': '3', 'mensaje': 'No se puede registrar este avión para esas fechas. Intente nuevamente.'})
         else:
@@ -77,11 +108,21 @@ class VueloCustomSerializer(serializers.Serializer):
 
 class CiudadSerializer(serializers.ModelSerializer):
 
+    """
+    Serializer del modelo Ciudad.
+    
+    """
+
     class Meta:
         model = Ciudad
         fields = '__all__'
 
 class CiudadCustomSerializer(serializers.Serializer):
+
+    """
+    Serializer del modelo Ciudad que considera campos en específico.
+    
+    """
     
     nombre = serializers.CharField(required = True)
     pais = serializers.CharField(required = True)
@@ -89,6 +130,11 @@ class CiudadCustomSerializer(serializers.Serializer):
 
 
 class AvionCustomSerializer(serializers.Serializer):
+
+    """
+    Serializer del modelo Avión que considera campos en específico.
+    
+    """
 
     modelo = serializers.CharField(required = True)
     capacidad = serializers.IntegerField(required = True)
@@ -139,11 +185,21 @@ class UsuarioSerializer(serializers.ModelSerializer):
 
 class ReservaSerializer(serializers.ModelSerializer):
 
+    """
+    Serializer del modelo Reserva.
+    
+    """
+
     class Meta:
         model = Reserva
         fields = '__all__'
 
 class ReservaCustomSerializer(serializers.Serializer):
+
+    """
+    Serializer del modelo Reserva que considera campos en específico.
+    
+    """
     
     fecha_reserva = serializers.DateField(required = True)
     valor_reserva = serializers.IntegerField(required = True)
