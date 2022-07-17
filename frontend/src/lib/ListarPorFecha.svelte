@@ -5,75 +5,32 @@
     import { navigate } from "svelte-routing";
     import {usuario, mensajeExito, mensajeError} from "../utils/store";
     import { onMount } from "svelte";
+    import * as listarPorFechaServices from "../utils/listarPorFechaServices";
+    import { vuelos_tabla } from '../utils/listarPorFechaServices';
 
-	let fechas_salida = []
+
+	let fechas_salida_promise = listarPorFechaServices.cargarFechasSalida()
     let fecha_salida = ''
-	let fechas_llegada = []
+	let fechas_llegada_promise = listarPorFechaServices.cargarFechasLlegada()
     let fecha_llegada = ''
-    let vuelos = []
-    let vuelos_tabla = []
-    let ciudades = []
-
-    onMount(async () => {
-        const response = await fetch('http://127.0.0.1:8000/vuelos/');
-        const vuelos_json = await response.json();
-        
-        for(let i=0; i<vuelos_json.length;i++){
-
-            vuelos[i] = vuelos_json[i];
-            fechas_salida[i] = vuelos_json[i].fecha_salida;
-            fechas_llegada[i] = vuelos_json[i].fecha_llegada;
-        }
-    })
-
-    onMount(async () => {
-        const response = await fetch('http://127.0.0.1:8000/ciudades/');
-        const ciudades_json = await response.json();
-        
-        for(let i=0; i<ciudades_json.length;i++){
-            
-            ciudades[i] = ciudades_json[i]
-        }
-    })
-
-    let poblar_tabla = () => {
-        for (let numero_vuelo = 0; numero_vuelo < vuelos.length; numero_vuelo++) {
-                  
-            if (vuelos[numero_vuelo].fecha_salida == fecha_salida && 
-                vuelos[numero_vuelo].fecha_llegada == fecha_llegada) {
-                    vuelos_tabla.push(vuelos[numero_vuelo]);
-            }
-        }
-        
-        for (let numero_vuelo_t = 0; numero_vuelo_t < vuelos_tabla.length; numero_vuelo_t++) {
-               
-            for (let numero_ciudad = 0; numero_ciudad < ciudades.length; numero_ciudad++) {
-                
-                if (vuelos_tabla[numero_vuelo_t].id_ciudad_origen == ciudades[numero_ciudad].id) {
-                    vuelos_tabla[numero_vuelo_t].nombre_ciudad_origen = ciudades[numero_ciudad].nombre;
-                } 
-                if (vuelos_tabla[numero_vuelo_t].id_ciudad_destino == ciudades[numero_ciudad].id) {
-                    vuelos_tabla[numero_vuelo_t].nombre_ciudad_destino = ciudades[numero_ciudad].nombre;
-                } 
-            }
-        }
-        
-        
-    }
-
+    let vuelos_promise
 
     let home = () => {
         $mensajeExito = null;
         $mensajeError = null;
+        listarPorFechaServices.limpiarVuelos()
         navigate("/home", {replace:true}); 
     }
 
     let vaciar_tabla = () => {
-        vuelos_tabla = [];
+        listarPorFechaServices.limpiarVuelos()
         fecha_salida = ''
         fecha_llegada = ''  
     }
 
+    let print = () =>{
+        console.log(listarPorFechaServices.vuelos_tabla)
+    }
 </script>
 
 <Styles />
@@ -90,19 +47,28 @@
         <div class="row mx-auto justify-content-between" style="width: 850px;">
             <div class="col-5">
                 <FormGroup floating label="Fecha de salida">
-                    <select class="form-select mb-3" aria-label="Default select example" bind:value={fecha_salida} on:change={poblar_tabla} >
-                        {#each fechas_salida as fecha_salida}
-                        <option>{fecha_salida}</option>                  
-                        {/each}                    
+                    <select class="form-select mb-3" aria-label="Default select example" bind:value={fecha_salida} >
+                        {#await fechas_salida_promise}
+                            
+                        {:then fechas_salida} 
+                            
+                            {#each fechas_salida as fecha_salida}
+                            <option>{fecha_salida}</option>                  
+                            {/each}                    
+                        {/await}
                     </select>
                 </FormGroup>
             </div>
             <div class="col-5">
                 <FormGroup floating label="Fecha de llegada">
-                    <select class="form-select mb-3" aria-label="Default select example" bind:value={fecha_llegada} on:change={poblar_tabla} >
-                        {#each fechas_llegada as fecha_llegada}
-                        <option>{fecha_llegada}</option>                  
-                        {/each}   
+                    <select class="form-select mb-3" aria-label="Default select example" bind:value={fecha_llegada} >
+                        {#await fechas_llegada_promise}
+                            
+                        {:then fechas_llegada}     
+                            {#each fechas_llegada as fecha_llegada}
+                            <option>{fecha_llegada}</option>                  
+                            {/each}   
+                        {/await}
                     </select>
                 </FormGroup>
             </div>
@@ -112,8 +78,11 @@
             </div>
         </div>
         <div class="row mx-auto" style="width: 850px;">
-            <div class="col">
-                {#if fecha_salida != '' && fecha_llegada != ''}
+            <div class="col">   
+                {#if fecha_salida != '' && fecha_llegada != '' }    
+                    {#await  vuelos_promise = listarPorFechaServices.poblarTabla(fecha_salida,fecha_llegada)}
+                        
+                    {:then vuelos}    
                     <Table hover bordered>
                         <thead>
                         <tr>
@@ -124,20 +93,19 @@
                             <th>Fecha Llegada</th>
                         </tr>
                         </thead>
-                        <tbody>
-                            
-                            {#each vuelos_tabla as vuelo_tabla}
-                                <tr>
-                                    <th scope="row">IC {vuelo_tabla.id}</th>
-                                    <td>{vuelo_tabla.nombre_ciudad_origen}</td>
-                                    <td>{vuelo_tabla.fecha_salida} - {vuelo_tabla.hora_salida}</td>
-                                    <td>{vuelo_tabla.nombre_ciudad_destino}</td>
-                                    <td>{vuelo_tabla.fecha_llegada} - {vuelo_tabla.hora_llegada}</td>
-                                </tr>
-                            {/each}
-                        
+                        <tbody>   
+                                {#each vuelos as vuelo_tabla}
+                                    <tr>
+                                        <th scope="row">IC {vuelo_tabla.id}</th>
+                                        <td>{vuelo_tabla.nombre_ciudad_origen}</td>
+                                        <td>{vuelo_tabla.fecha_salida} - {vuelo_tabla.hora_salida}</td>
+                                        <td>{vuelo_tabla.nombre_ciudad_destino}</td>
+                                        <td>{vuelo_tabla.fecha_llegada} - {vuelo_tabla.hora_llegada}</td>
+                                    </tr>
+                                {/each}
                         </tbody>
                     </Table>
+                    {/await}
                 {/if}
             </div>
         </div>
