@@ -3,7 +3,7 @@
     import { Router, Link, Route } from "svelte-routing";
     import Home from './Home.svelte';
     import { navigate } from "svelte-routing";
-    import {usuario, mensaje_exito} from "../utils/store";
+    import {usuario, mensajeExito, mensajeError} from "../utils/store";
     import { onMount } from "svelte";
 
 	let fecha_salida = ''
@@ -65,7 +65,8 @@
     }
 
     let home = () => {
-        $mensaje_exito=null;
+        $mensajeExito=null;
+        $mensajeError=null;
         navigate("/home", {replace:true}); 
     }
 

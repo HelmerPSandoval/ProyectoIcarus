@@ -3,16 +3,13 @@
     import { Router, Link, Route } from "svelte-routing";
     import Home from './Home.svelte';
     import { navigate } from "svelte-routing";
-    import {usuario, mensaje_exito} from "../utils/store";
+    import {usuario, mensajeExito, mensajeError} from "../utils/store";
     import { onMount } from "svelte";
 
 	let fechas_salida = []
     let fecha_salida = ''
 	let fechas_llegada = []
     let fecha_llegada = ''
-    let id = 0 //id de vuelo
-    let id_ciudad_origen = 0
-    let id_ciudad_destino = 0
     let vuelos = []
     let vuelos_tabla = []
     let ciudades = []
@@ -67,7 +64,8 @@
 
 
     let home = () => {
-        $mensaje_exito=null;
+        $mensajeExito = null;
+        $mensajeError = null;
         navigate("/home", {replace:true}); 
     }
 
@@ -77,14 +75,6 @@
         fecha_llegada = ''  
     }
 
-    function limpiar_fechas() {
-        fecha_salida = fecha_salida.replaceAll('[','')
-        fecha_salida = fecha_salida.replaceAll(']','')
-        fecha_llegada = fecha_llegada.replaceAll('[','')
-        fecha_llegada = fecha_llegada.replaceAll(']','')
-    }
-
-    
 </script>
 
 <Styles />

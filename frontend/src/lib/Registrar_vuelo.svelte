@@ -3,7 +3,7 @@
     import { Router, Link, Route } from "svelte-routing";
     import Home from './Home.svelte';
     import { navigate } from "svelte-routing";
-    import {usuario, mensaje_exito, mensaje_error} from "../utils/store";
+    import {usuario, mensajeExito, mensajeError} from "../utils/store";
     import { onMount } from "svelte";
 
     //Formulario registro de vuelo
@@ -79,7 +79,7 @@
     
     let error_ = false;
     console.log("usuario:",$usuario);
-    console.log("mensaje_exito:",$mensaje_exito);
+    console.log("mensajeExito:",$mensajeExito);
 
     async function registrar_vuelo () {
         try {
@@ -105,7 +105,7 @@
             console.log(result)
             if(datos.Return == 69)
             { 
-                $mensaje_exito = "Vuelo registrado con éxito.";
+                $mensajeExito = "Vuelo registrado con éxito.";
                 
             }else{
                 error_ = true;
@@ -113,7 +113,7 @@
             }
 
         } catch (error) {
-            $mensaje_error = "Ha ocurrido un error durante el registro.";
+            $mensajeError = "Ha ocurrido un error durante el registro.";
         }
 	}
 
@@ -135,7 +135,7 @@
             console.log(result)
             if(datos.Return == 69)
             { 
-                $mensaje_exito = "Ciudad registrada con éxito.";
+                $mensajeExito = "Ciudad registrada con éxito.";
                 nombre = ''
                 pais = ''
                 llenar_dropdown_ciudades()
@@ -145,7 +145,7 @@
             }
 
         } catch (error) {
-            $mensaje_error = "Ha ocurrido un error durante el registro.";
+            $mensajeError = "Ha ocurrido un error durante el registro.";
             nombre = ''
             pais = ''
         }
@@ -171,7 +171,7 @@
             if(datos.Return == 69)
             { 
                 
-                $mensaje_exito = "Avión registrado con éxito.";
+                $mensajeExito = "Avión registrado con éxito.";
                 modelo = ''
                 capacidad = 50
                 llenar_dropdown_aviones()
@@ -182,7 +182,7 @@
             }
 
         } catch (error) {
-            $mensaje_error = "Ha ocurrido un error durante el registro.";
+            $mensajeError = "Ha ocurrido un error durante el registro.";
             modelo = ''
             capacidad = 50
         }
@@ -190,8 +190,8 @@
 	}
 
     let home = () => {
-        $mensaje_exito=null;
-        $mensaje_error=null;
+        $mensajeExito=null;
+        $mensajeError=null;
         navigate("/home", {replace:true}); 
     }
     
@@ -218,15 +218,15 @@
 </div>
 <h1>Registrar nuevo vuelo</h1>
 <h4>Ingrese la información del vuelo</h4>
-{#if $mensaje_exito != null} 
+{#if $mensajeExito != null} 
     <div class="mt-1" style="margin-left: 400px; margin-right: 400px;">
-        <Alert style="text-align: center;" color="info" dismissible>{$mensaje_exito}</Alert>
+        <Alert style="text-align: center;" color="info" dismissible>{$mensajeExito}</Alert>
     </div>
 {/if}
 
-{#if $mensaje_error != null} 
+{#if $mensajeError != null} 
     <div class="mt-1" style="margin-left: 400px; margin-right: 400px;">
-        <Alert style="text-align: center;" color="danger" dismissible>{$mensaje_error}</Alert>
+        <Alert style="text-align: center;" color="danger" dismissible>{$mensajeError}</Alert>
     </div>
 {/if}
 <main > 

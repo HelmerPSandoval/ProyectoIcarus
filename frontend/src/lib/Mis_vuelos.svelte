@@ -1,19 +1,20 @@
 <script>
     import {Spinner, Tooltip, Alert, Table, Styles, Icon} from 'sveltestrap';
-    import {usuario, mensaje_exito, mensaje_error} from "../utils/store";
+    import {usuario, mensajeExito, mensajeError} from "../utils/store";
     import { navigate } from "svelte-routing";
     import {cargarTabla, cancelarReserva} from "../utils/misVuelosServices";
 
     let rutUsuario = $usuario.rut
     let reservasPromise = cargarTabla(rutUsuario);
+    console.log(reservasPromise);
 
     function refrescarTabla(idReservaCancelada, rutUsuario){
         reservasPromise = cancelarReserva(idReservaCancelada, rutUsuario);
     }
 
     let goToHome = () => {
-    mensaje_exito.set(null);
-    mensaje_error.set(null);
+    mensajeExito.set(null);
+    mensajeError.set(null);
     navigate("/home", {replace:true}); 
 }
 
@@ -24,15 +25,15 @@
     <Tooltip target="boton_home" placement="right">Volver al inicio</Tooltip>
 </div>
 <h1>Mis vuelos</h1>
-{#if $mensaje_exito != null} 
+{#if $mensajeExito != null} 
     <div class="mt-1" style="margin-left: 400px; margin-right: 400px;">
-        <Alert style="text-align: center;" color="info" dismissible>{$mensaje_exito}</Alert>
+        <Alert style="text-align: center;" color="info" dismissible>{$mensajeExito}</Alert>
     </div>
 {/if}
 
-{#if $mensaje_error != null} 
+{#if $mensajeError != null} 
     <div class="mt-1" style="margin-left: 400px; margin-right: 400px;">
-        <Alert style="text-align: center;" color="danger" dismissible>{$mensaje_error}</Alert>
+        <Alert style="text-align: center;" color="danger" dismissible>{$mensajeError}</Alert>
     </div>
 {/if}
 
