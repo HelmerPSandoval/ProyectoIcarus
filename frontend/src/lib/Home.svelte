@@ -56,6 +56,13 @@
         navigate("/listar_vuelos_c", {replace:true});
     } 
 
+    let goto_listar_vuelos_f = () =>
+    {
+        $mensaje_exito = null;        
+        $mensaje_error = null; 
+        navigate("/listar_vuelos_f", {replace:true});
+    }
+
     
 </script>
 
@@ -138,7 +145,7 @@
                                     </div>
                                     <p class="mb-1">Listar todos los vuelos disponibles para una ciudad específica y un destino particular.</p>
                                 </button>
-                                <button class="list-group-item list-group-item-action">
+                                <button class="list-group-item list-group-item-action" on:click="{goto_listar_vuelos_f}">
                                     <div class="d-flex w-100 justify-content-left">
                                         <h5 class="mb-1">Listar Vuelos por Fecha <Icon name="calendar-event" /></h5>
                                     </div>

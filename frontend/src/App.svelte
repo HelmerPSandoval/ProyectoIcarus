@@ -9,7 +9,8 @@
   import EditarVuelo from './lib/Editar_vuelo.svelte';
   import ListarPorCiudades from './lib/Listar_por_ciudades.svelte';
   import ReservarVuelo from './lib/Reservar_vuelo.svelte';
-import MisVuelos from './lib/Mis_vuelos.svelte';
+  import MisVuelos from './lib/Mis_vuelos.svelte';
+  import ListarPorFecha from './lib/Listar_por_fecha.svelte';
 </script>
 
 <main>
@@ -44,6 +45,10 @@ import MisVuelos from './lib/Mis_vuelos.svelte';
 		</Route>
 
     <Route path="/listar_vuelos_f">
+      <ListarPorFecha></ListarPorFecha>
+    </Route>
+
+    <Route path="/editar_vuelo">
 			<EditarVuelo></EditarVuelo>
 		</Route>
 
