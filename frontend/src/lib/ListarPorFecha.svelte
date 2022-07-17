@@ -39,7 +39,6 @@
     let poblar_tabla = () => {
         for (let numero_vuelo = 0; numero_vuelo < vuelos.length; numero_vuelo++) {
                   
-            console.log(vuelos[numero_vuelo].fecha_salida, fecha_salida)
             if (vuelos[numero_vuelo].fecha_salida == fecha_salida && 
                 vuelos[numero_vuelo].fecha_llegada == fecha_llegada) {
                     vuelos_tabla.push(vuelos[numero_vuelo]);

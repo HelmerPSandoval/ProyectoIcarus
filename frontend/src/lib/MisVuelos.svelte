@@ -6,7 +6,6 @@
 
     let rutUsuario = $usuario.rut
     let reservasPromise = cargarTabla(rutUsuario);
-    console.log(reservasPromise);
 
     function refrescarTabla(idReservaCancelada, rutUsuario){
         reservasPromise = cancelarReserva(idReservaCancelada, rutUsuario);
@@ -25,17 +24,14 @@
     <Tooltip target="boton_home" placement="right">Volver al inicio</Tooltip>
 </div>
 <h1>Mis vuelos</h1>
-{#if $mensajeExito != null} 
-    <div class="mt-1" style="margin-left: 400px; margin-right: 400px;">
-        <Alert style="text-align: center;" color="info" dismissible>{$mensajeExito}</Alert>
-    </div>
-{/if}
-
-{#if $mensajeError != null} 
-    <div class="mt-1" style="margin-left: 400px; margin-right: 400px;">
-        <Alert style="text-align: center;" color="danger" dismissible>{$mensajeError}</Alert>
-    </div>
-{/if}
+<div class="row mx-auto mt-3" style="display: flex; width: 400px;">     
+    {#if $mensajeExito != null} 
+            <Alert style="text-align: center;" color="info" dismissible>{$mensajeExito}</Alert>
+    {/if}           
+    {#if $mensajeError != null} 
+            <Alert style="text-align: center;" color="danger" dismissible>{$mensajeError}</Alert>
+    {/if}      
+</div>
 
 <main>
     <div class="form-signin">

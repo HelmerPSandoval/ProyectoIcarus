@@ -25,42 +25,42 @@
     {
         $mensajeExito = null;        
         $mensajeError = null; 
-        navigate("/registrar_vuelo", {replace:true});
+        navigate("/registrar-vuelo", {replace:true});
     }
 
     let goto_e_vuelo = () =>
     {
         $mensajeExito = null;        
         $mensajeError = null; 
-        navigate("/editar_vuelo", {replace:true});
+        navigate("/editar-vuelo", {replace:true});
     } 
 
     let goto_res_vuelo = () =>
     {
         $mensajeExito = null;        
         $mensajeError = null; 
-        navigate("/reservar_vuelo", {replace:true});
+        navigate("/reservar-vuelo", {replace:true});
     }
 
     let goto_mis_vuelos = () =>
     {
         $mensajeExito = null;        
         $mensajeError = null; 
-        navigate("/mis_vuelos", {replace:true});
+        navigate("/mis-vuelos", {replace:true});
     }
 
     let goto_listar_vuelos_c = () => 
     {
         $mensajeExito = null;        
         $mensajeError = null; 
-        navigate("/listar_vuelos_c", {replace:true});
+        navigate("/listar-vuelos-c", {replace:true});
     } 
 
     let goto_listar_vuelos_f = () =>
     {
         $mensajeExito = null;        
         $mensajeError = null; 
-        navigate("/listar_vuelos_f", {replace:true});
+        navigate("/listar-vuelos-f", {replace:true});
     }
 
     

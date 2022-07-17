@@ -41,11 +41,14 @@
 </script>
 
 <Image alt="Icarus Airline" src="images/IcarusAirline.png" />
-{#if $mensajeExito != null} 
-    <div style="margin-left: 400px; margin-right: 400px;">
-        <Alert color="info" dismissible>{$mensajeExito}</Alert>
-    </div>
-{/if}
+<div class="row mx-auto mt-3" style="display: flex; width: 400px;">     
+    {#if $mensajeExito != null} 
+            <Alert style="text-align: center;" color="info" dismissible>{$mensajeExito}</Alert>
+    {/if}           
+    {#if $mensajeError != null} 
+            <Alert style="text-align: center;" color="danger" dismissible>{$mensajeError}</Alert>
+    {/if}      
+</div>
 <main class="form-signin"> 
     
     <Form>

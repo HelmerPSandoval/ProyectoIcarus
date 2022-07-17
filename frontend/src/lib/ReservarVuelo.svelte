@@ -210,17 +210,14 @@
     <Tooltip target="boton_home" placement="right">Volver al inicio</Tooltip>
 </div>
 <h1>Realizar reserva</h1>
-{#if $mensajeExito != null} 
-    <div class="mt-1" style="margin-left: 400px; margin-right: 400px;">
-        <Alert style="text-align: center;" color="info" dismissible>{$mensajeExito}</Alert>
-    </div>
-{/if}
-
-{#if $mensajeError != null} 
-    <div class="mt-1" style="margin-left: 400px; margin-right: 400px;">
-        <Alert style="text-align: center;" color="danger" dismissible>{$mensajeError}</Alert>
-    </div>
-{/if}
+<div class="row mx-auto mt-3" style="display: flex; width: 400px;">     
+    {#if $mensajeExito != null} 
+            <Alert style="text-align: center;" color="info" dismissible>{$mensajeExito}</Alert>
+    {/if}           
+    {#if $mensajeError != null} 
+            <Alert style="text-align: center;" color="danger" dismissible>{$mensajeError}</Alert>
+    {/if}      
+</div>
 <main> 
     {#if estado_app == 1}
     <h4>Seleccione una ciudad de origen y de destino para desplegar vuelos disponibles</h4>
