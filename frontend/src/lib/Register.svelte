@@ -1,69 +1,17 @@
 <script>
-    import { Label, Col, Container, Row, Styles, Icon, Input, Button, Form, FormGroup, Image, Card  } from 'sveltestrap';
-    import { Router, Link, Route } from "svelte-routing";
-    import Home from './Home.svelte';
+    import {Alert, Styles, Icon, Input, Form, FormGroup, Image  } from 'sveltestrap';
     import { navigate } from "svelte-routing";
-    import {usuario} from "../utils/store";
+    import {registrarUsuario} from "../utils/registerServices";
+    import {usuario, mensajeExito, mensajeError} from "../utils/store";
 
-	let rut = ''
-	let password = ''
-	let nombre = ''
-	let apellido = ''
-	let email = ''
-	let rol = '2'
-	let sexo = ''
-	let telefono = ''
-	let fecha_nacimiento = ''
+    let usuarioARegistrar = {};
 
-    let last_login = null
-    let usuario_activo = true
-    let usuario_administrador = false
-    
-    
-    
-	let result = null
-    
-    let error_ = false;
+    let inicio = () => {
+        $mensajeExito=null;
+        $mensajeError=null;
+        navigate("/", {replace:true});
 
-    async function registrar_usuario () {
-        try {
-            const res = await fetch('http://127.0.0.1:8000/api/usuario/', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    rut,
-                    password,
-                    last_login,
-                    nombre,
-                    apellido,
-                    email,
-                    rol,
-                    sexo,
-                    telefono,
-                    fecha_nacimiento,
-                    usuario_activo,
-                    usuario_administrador,
-                })
-            })
-            const datos = await res.json()
-            result = JSON.stringify(datos);
-            console.log(datos)
-            if(!datos.email && !datos.rut && !datos.nombre)
-            { 
-                navigate("/home", {replace:true});
-            }else{
-                error_ = true;
-            }
-
-        } catch (error) {
-            
-        }
-	}
-
-    let inicio = () => navigate("/", {replace:true});
+    }
 ;
 
     
@@ -74,42 +22,50 @@
 
 <br>
 <Image alt="Icarus Airline" src="images/IcarusAirline.png" />
+<div class="row mx-auto mt-3" style="display: flex; width: 400px;">     
+    {#if $mensajeExito != null} 
+            <Alert style="text-align: center;" color="info" dismissible>{$mensajeExito}</Alert>
+    {/if}           
+    {#if $mensajeError != null} 
+            <Alert style="text-align: center;" color="danger" dismissible>{$mensajeError}</Alert>
+    {/if}      
+</div>
 <main class="form-signin"> 
     
     <Form>
         <div>
             <FormGroup floating label="Rut">
-                <Input class="h3 mb-3 fw-normal" bind:value={rut}/>
+                <Input class="h3 mb-3 fw-normal" bind:value={usuarioARegistrar.rut}/>
             </FormGroup>
         </div>
 
         <div>
             <FormGroup floating label="Contraseña">
-                <Input class="h3 mb-3 fw-normal" type="password" bind:value={password}/>
+                <Input class="h3 mb-3 fw-normal" type="password" bind:value={usuarioARegistrar.password}/>
             </FormGroup>
         </div>
 
         <div>
             <FormGroup floating label="Nombre">
-                <Input class="h3 mb-3 fw-normal" bind:value={nombre}/>
+                <Input class="h3 mb-3 fw-normal" bind:value={usuarioARegistrar.nombre}/>
             </FormGroup>
         </div>
 
         <div class="form-floating">
             <FormGroup floating label="Apellido">
-                <Input class="h3 mb-3 fw-normal" bind:value={apellido} />
+                <Input class="h3 mb-3 fw-normal" bind:value={usuarioARegistrar.apellido} />
             </FormGroup>
         </div>  
         
         <div class="form-floating">
             <FormGroup floating label="Email">
-                <Input class="h3 mb-3 fw-normal" bind:value={email} />
+                <Input class="h3 mb-3 fw-normal" bind:value={usuarioARegistrar.email} />
             </FormGroup>
         </div> 
 
         <div>
             <FormGroup floating label="Sexo">
-            <select class="form-select mb-3" aria-label="Default select example" bind:value={sexo}>
+            <select class="form-select mb-3" aria-label="Default select example" bind:value={usuarioARegistrar.sexo}>
                 <option value="hombre">hombre</option>
                 <option value="mujer">mujer</option>
                 <option value="otro">otro</option>
@@ -119,20 +75,20 @@
 
         <div class="form-floating">
             <FormGroup floating label="Teléfono">
-                <Input class="h3 mb-3 fw-normal" bind:value={telefono} />
+                <Input class="h3 mb-3 fw-normal" bind:value={usuarioARegistrar.telefono} />
             </FormGroup>
         </div>
         
         <div class="form-floating">
             <FormGroup floating label="Fecha de nacimiento">
-                <Input  type="date" name="date" class="h3 mb-3 fw-normal" bind:value={fecha_nacimiento} />
+                <Input  type="date" name="date" class="h3 mb-3 fw-normal" bind:value={usuarioARegistrar.fecha_nacimiento} />
             </FormGroup>
             
         </div>
 
         <div>
             <div class="row">
-                <button type="button" class="h3 mt-3 fw-normal btn boton_login" on:click={registrar_usuario}>Registrar Usuario</button>
+                <button type="button" class="h3 mt-3 fw-normal btn boton_login" on:click={() => registrarUsuario(usuarioARegistrar)}>Registrar Usuario</button>
             </div>
         </div>
         

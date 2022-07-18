@@ -1,64 +1,67 @@
 <script>
     import { Tooltip, Col, Container, Row, Styles, Icon, Input, Button, Form, FormGroup, Image, Card  } from 'sveltestrap';
     import { navigate } from "svelte-routing";
-    import {usuario, mensaje_exito, mensaje_error} from "../utils/store";
+    import {usuario, mensajeExito, mensajeError} from "../utils/store";
     import { writable } from "svelte/store";
     import { onMount } from 'svelte';
-
-
-    console.log("usuario:",$usuario);
-    console.log("mensaje_exito:",$mensaje_exito);
 
     onMount(async () => {
 		
         if ($usuario == null){
             navigate("/", {replace:true});
-            $mensaje_exito = "Se ha cerrado la sesión de manera inesperada, por favor evite refrescar la página."
-            $mensaje_error = null;   
+            $mensajeExito = "Se ha cerrado la sesión de manera inesperada, por favor evite refrescar la página."
+            $mensajeError = null;   
         }
 	});
 	
     function logout () {          
         $usuario = writable(null);
         navigate("/", {replace:true}); 
-        $mensaje_exito = null;        
-        $mensaje_error = null;        
+        $mensajeExito = null;        
+        $mensajeError = null;        
 	}
 
     let goto_r_vuelo = () => 
     {
-        $mensaje_exito = null;        
-        $mensaje_error = null; 
-        navigate("/registrar_vuelo", {replace:true});
+        $mensajeExito = null;        
+        $mensajeError = null; 
+        navigate("/registrar-vuelo", {replace:true});
     }
 
     let goto_e_vuelo = () =>
     {
-        $mensaje_exito = null;        
-        $mensaje_error = null; 
-        navigate("/editar_vuelo", {replace:true});
+        $mensajeExito = null;        
+        $mensajeError = null; 
+        navigate("/editar-vuelo", {replace:true});
     } 
 
     let goto_res_vuelo = () =>
     {
-        $mensaje_exito = null;        
-        $mensaje_error = null; 
-        navigate("/reservar_vuelo", {replace:true});
+        $mensajeExito = null;        
+        $mensajeError = null; 
+        navigate("/reservar-vuelo", {replace:true});
     }
 
     let goto_mis_vuelos = () =>
     {
-        $mensaje_exito = null;        
-        $mensaje_error = null; 
-        navigate("/mis_vuelos", {replace:true});
+        $mensajeExito = null;        
+        $mensajeError = null; 
+        navigate("/mis-vuelos", {replace:true});
     }
 
     let goto_listar_vuelos_c = () => 
     {
-        $mensaje_exito = null;        
-        $mensaje_error = null; 
-        navigate("/listar_vuelos_c", {replace:true});
+        $mensajeExito = null;        
+        $mensajeError = null; 
+        navigate("/listar-vuelos-c", {replace:true});
     } 
+
+    let goto_listar_vuelos_f = () =>
+    {
+        $mensajeExito = null;        
+        $mensajeError = null; 
+        navigate("/listar-vuelos-f", {replace:true});
+    }
 
     
 </script>
@@ -142,7 +145,7 @@
                                     </div>
                                     <p class="mb-1">Listar todos los vuelos disponibles para una ciudad específica y un destino particular.</p>
                                 </button>
-                                <button class="list-group-item list-group-item-action">
+                                <button class="list-group-item list-group-item-action" on:click="{goto_listar_vuelos_f}">
                                     <div class="d-flex w-100 justify-content-left">
                                         <h5 class="mb-1">Listar Vuelos por Fecha <Icon name="calendar-event" /></h5>
                                     </div>

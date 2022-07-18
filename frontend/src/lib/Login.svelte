@@ -3,13 +3,11 @@
     import { Router, Link, Route } from "svelte-routing";
     import Home from './Home.svelte';
     import { navigate } from "svelte-routing";
-    import {usuario, mensaje_exito,mensaje_error} from "../utils/store";
+    import {usuario, mensajeExito,mensajeError} from "../utils/store";
 
-	let username = 'mandarino@maderasrafa.cl'
-	let password = '123'
-	let result = null
-    console.log($mensaje_exito)
-    let error_ = false;
+	let username;
+	let password;
+    console.log($mensajeExito)
 
     async function login () {
         try {
@@ -25,14 +23,11 @@
                 })
             })
             const datos = await res.json()
-            result = JSON.stringify(datos);
             if(datos.user.rol != null)
             {
                 $usuario = datos.user;
-                $mensaje_exito=null;
+                $mensajeExito=null;
                 navigate("/home", {replace:true});
-            }else{
-                error_ = true;
             }
         } catch (error) {
             
@@ -46,11 +41,14 @@
 </script>
 
 <Image alt="Icarus Airline" src="images/IcarusAirline.png" />
-{#if $mensaje_exito != null} 
-    <div style="margin-left: 400px; margin-right: 400px;">
-        <Alert color="info" dismissible>{$mensaje_exito}</Alert>
-    </div>
-{/if}
+<div class="row mx-auto mt-3" style="display: flex; width: 400px;">     
+    {#if $mensajeExito != null} 
+            <Alert style="text-align: center;" color="info" dismissible>{$mensajeExito}</Alert>
+    {/if}           
+    {#if $mensajeError != null} 
+            <Alert style="text-align: center;" color="danger" dismissible>{$mensajeError}</Alert>
+    {/if}      
+</div>
 <main class="form-signin"> 
     
     <Form>
@@ -63,7 +61,6 @@
         <div>
             <FormGroup floating label="Contraseña">
                 <Input class="h3 mb-3 fw-normal" type="password" bind:value={password}/>
-                <a href="/reset_password"> ¿olvidó su contraseña?</a>
             </FormGroup>
         </div>
         

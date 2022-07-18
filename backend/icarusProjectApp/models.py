@@ -30,15 +30,18 @@ class Usuario(AbstractBaseUser):
     Este es el modelo del Usuario.
 
     Campos:
-        rut {varchar} -- texto en formato rut chileno
         nombre {varchar} -- texto con el nombre del usuario
         apellido {varchar} -- texto con el apellido del usuario
         email {email} -- email que contiene el del usuario
         password {varchar} -- texto con el password del usuario
+        rut {varchar} -- texto en formato rut chileno    
         rol {integer} -- numero que indica el rol del usuario, 0 admin, 1 cliente
         sexo {varchar} -- texto que indica el sexo del usuario
         telefono {integer} -- numero que indica el telefono del usuario
         fecha_nacimiento {date} -- fecha que indica la fecha de nacimiento del usuario
+        usuario_activo {boolean} -- booleano que indica el status del usuario
+        usuario_administrador {boolean} -- booleano que indica si el usuario es administrador
+        objects -- instancia de clase Usuario Manager
 
     """
     nombre =models.CharField(max_length = 255,null=True)
@@ -74,10 +77,6 @@ class Usuario(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.usuario_administrador
-
-
-        
-
 
     class Meta:
         managed = True
@@ -127,8 +126,10 @@ class Vuelo(models.Model):
 
     Campos:
         id {autoincrement} -- numero que identifica al vuelo, que se autoincrementa a medida que se ingresan más vuelos
-        fecha_salida {datetime} -- fecha y hora de salida del vuelo
-        fecha_llegada {datetime} -- fecha y hora de llegada del vuelo
+        fecha_salida {date} -- fecha de salida del vuelo
+        hora_salida {time} -- hora de salida del vuelo
+        fecha_llegada {date} -- fecha de llegada del vuelo
+        hora_llegada {time} -- hora de llegada del vuelo
         id_ciudad_origen {foreign} -- relacion con la ciudad del modelo Ciudad
         id_ciudad_destino {foreign} -- relacion con la ciudad del modelo Ciudad
         id_avion_asociado {foreign} -- relacion con el id del avion del modelo Avion
@@ -168,7 +169,6 @@ class Reserva(models.Model):
 
     Campos:
         id {autoincrement} -- numero de la reserva, que se va autoincrementando
-        solo_ida {boolean} -- booleano que indica si la reserva es solamente de ida, 0 solo ida, 1 ida y vuelta
         fecha_reserva {datetime} -- fecha y hora que indica cuando se hizo la reserva
         valor_reserva {integer} -- numero que indica el valor de la reserva
         rut_usuario {foreign} -- relacion con el rut del modelo Usuario
@@ -201,10 +201,9 @@ class Pago(models.Model):
         id {autoincrement} -- numero de transaccion que identifica el pago, el cual se va autoincrementando
         tarjeta_credito {varchar} -- texto que indica el tipo de tarjeta
         numero_tarjeta {integer} -- numero de la tarjeta de credito
-        fecha_vencimiento {date} -- fecha de vencimiento de la tarjeta
+        fecha_vencimiento {varchar} -- fecha de vencimiento de la tarjeta
         cvc {integer} -- numero de cvc de la tarjeta
         rut_usuario {foreign} -- relacion con el rut del modelo Usuario
-        id_reserva {foreign} -- relacion con el id de reserva del modelo Reserva
 
     """
 
