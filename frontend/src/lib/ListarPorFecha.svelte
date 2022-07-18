@@ -1,19 +1,15 @@
 <script>
     import {Tooltip, Alert, Table, Col, Container, Row, Styles, Icon, Input, Button, Form, FormGroup, Image, Card  } from 'sveltestrap';
-    import { Router, Link, Route } from "svelte-routing";
-    import Home from './Home.svelte';
     import { navigate } from "svelte-routing";
     import {usuario, mensajeExito, mensajeError} from "../utils/store";
-    import { onMount } from "svelte";
     import * as listarPorFechaServices from "../utils/listarPorFechaServices";
-    import { vuelos_tabla } from '../utils/listarPorFechaServices';
 
 
 	let fechas_salida_promise = listarPorFechaServices.cargarFechasSalida()
     let fecha_salida = ''
 	let fechas_llegada_promise = listarPorFechaServices.cargarFechasLlegada()
     let fecha_llegada = ''
-    let vuelos_promise
+    let vuelos_tabla_promise
 
     let home = () => {
         $mensajeExito = null;
@@ -51,9 +47,9 @@
                         {#await fechas_salida_promise}
                             
                         {:then fechas_salida} 
-                            
+                            <option selected disabled hidden style='display: none' value=''></option>
                             {#each fechas_salida as fecha_salida}
-                            <option>{fecha_salida}</option>                  
+                                <option>{fecha_salida}</option>                  
                             {/each}                    
                         {/await}
                     </select>
@@ -64,9 +60,10 @@
                     <select class="form-select mb-3" aria-label="Default select example" bind:value={fecha_llegada} >
                         {#await fechas_llegada_promise}
                             
-                        {:then fechas_llegada}     
+                        {:then fechas_llegada}   
+                            <option selected disabled hidden style='display: none' value=''></option>  
                             {#each fechas_llegada as fecha_llegada}
-                            <option>{fecha_llegada}</option>                  
+                                <option>{fecha_llegada}</option>                  
                             {/each}   
                         {/await}
                     </select>
@@ -80,9 +77,8 @@
         <div class="row mx-auto" style="width: 850px;">
             <div class="col">   
                 {#if fecha_salida != '' && fecha_llegada != '' }    
-                    {#await  vuelos_promise = listarPorFechaServices.poblarTabla(fecha_salida,fecha_llegada)}
-                        
-                    {:then vuelos}    
+                    {#await  vuelos_tabla_promise = listarPorFechaServices.poblarTabla(fecha_salida,fecha_llegada)}
+                    {:then vuelos_tabla}    
                     <Table hover bordered>
                         <thead>
                         <tr>
@@ -94,7 +90,7 @@
                         </tr>
                         </thead>
                         <tbody>   
-                                {#each vuelos as vuelo_tabla}
+                                {#each vuelos_tabla as vuelo_tabla}
                                     <tr>
                                         <th scope="row">IC {vuelo_tabla.id}</th>
                                         <td>{vuelo_tabla.nombre_ciudad_origen}</td>
