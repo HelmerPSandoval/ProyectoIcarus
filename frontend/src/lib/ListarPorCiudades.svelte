@@ -6,7 +6,6 @@
 
 	let id_ciudad_origen = 0
 	let id_ciudad_destino = 0
-    let vuelos_promise = listarPorCiudadServices.cargarVuelos()
     let ciudades_promise = listarPorCiudadServices.cargarCiudades()
     let vuelos_tabla_promise
 
@@ -22,9 +21,7 @@
         id_ciudad_origen = 0;
         id_ciudad_destino = 0;
 
-    }
-
-    
+    }    
 </script>
 
 <Styles />
@@ -43,7 +40,6 @@
                 <FormGroup floating label="Ciudad de Origen">
                     <select class="form-select mb-3" aria-label="Default select example" bind:value={id_ciudad_origen} >
                        {#await ciudades_promise}
-                        
                        {:then ciudades} 
                             <option selected disabled hidden style='display: none' value=''></option>
                             {#each ciudades as ciudad}
@@ -57,7 +53,6 @@
                 <FormGroup floating label="Ciudad de Destino">
                     <select class="form-select mb-3" aria-label="Default select example" bind:value={id_ciudad_destino}>
                         {#await ciudades_promise}
-                        
                         {:then ciudades} 
                             <option selected disabled hidden style='display: none' value=''></option>
                              {#each ciudades as ciudad}

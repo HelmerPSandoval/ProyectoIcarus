@@ -26,7 +26,6 @@ export async function cargarCiudades(){
 export async function poblarTabla(id_ciudad_origen,id_ciudad_destino){
     let vuelos = await cargarVuelos()
     let ciudades = await cargarCiudades()
-
     
     for (let numero_vuelo = 0; numero_vuelo < vuelos.length; numero_vuelo++) {
                   
@@ -48,8 +47,6 @@ export async function poblarTabla(id_ciudad_origen,id_ciudad_destino){
             } 
         }
     }
-    
-    
     return vuelos_tabla
 }
 

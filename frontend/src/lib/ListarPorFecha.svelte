@@ -4,7 +4,6 @@
     import {usuario, mensajeExito, mensajeError} from "../utils/store";
     import * as listarPorFechaServices from "../utils/listarPorFechaServices";
 
-
 	let fechas_salida_promise = listarPorFechaServices.cargarFechasSalida()
     let fecha_salida = ''
 	let fechas_llegada_promise = listarPorFechaServices.cargarFechasLlegada()
@@ -22,10 +21,6 @@
         listarPorFechaServices.limpiarVuelos()
         fecha_salida = ''
         fecha_llegada = ''  
-    }
-
-    let print = () =>{
-        console.log(listarPorFechaServices.vuelos_tabla)
     }
 </script>
 
